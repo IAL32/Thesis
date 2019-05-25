@@ -1,5 +1,6 @@
-\documentclass[12pt,letterpaper]{report}
+\documentclass[12pt]{report}
 \usepackage[utf8]{inputenc}
+\usepackage{csquotes}
 \usepackage{amsmath, amssymb, amsfonts, latexsym}
 \usepackage[italian]{babel}
 \usepackage{geometry}                         
@@ -28,7 +29,7 @@
 \rfoot{\small Università degli Studi di Milano-Bicocca}
 
 \author{Adrian David Castro Tenemaya, 816015}
-\title{Università degli Studi di Milano-Bicocca \\{\small Dipartimento di Informatica \\ Corso di Informatica - E3101Q\\A.A. 2016-2019\\\vspace*{0.55in} \ }\\ Inferenza di progressioni tumorali con Particle Swarm Optimization \vspace*{1.25in}}
+\title{Università degli Studi di Milano-Bicocca \\{\small Dipartimento di Informatica \\ Corso di Informatica - E3101Q\\A.A. 2016-2019\\\vspace*{0.55in} \ }\\ Inferenza di alberi tumorali tramite Particle Swarm Optimization \vspace*{1.25in}}
 \date{\today}
 
 %%%%%%%%%%%%%%%%
@@ -54,21 +55,15 @@
 % \maketitle
 
 \newpage
-\thispagestyle{empty}
 \tableofcontents
 \listoffigures
 \listoftables
-
-\newpage
-
 \pagenumbering{arabic}
-\cfoot{\thepage}
+
 \input{0_Thanks.tex}
 \input{1_Introduction.tex}
-
-\newpage
-
-\appendix
+\input{2_History.tex}
+\input{3_Methods.tex}
 
 \printbibliography
 
