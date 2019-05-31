@@ -1,4 +1,4 @@
-\documentclass[12pt]{report}
+\documentclass[a4paper,12pt,openright,twoside]{book}
 \usepackage[utf8]{inputenc}
 \usepackage{csquotes}
 \usepackage{amsmath, amssymb, amsfonts, latexsym}
@@ -8,7 +8,6 @@
 \usepackage{graphicx}
 \usepackage[lofdepth,lotdepth]{subfig}
 \usepackage{pdfpages}
-\usepackage{appendix}
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
 \usepackage{float}
 \usepackage{booktabs}
@@ -18,8 +17,8 @@
 \pagenumbering{roman}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\usepackage{multicol}
-\usepackage{textcomp}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
 
 \lhead{E3101Q - Informatica}
 \chead{}
@@ -42,6 +41,7 @@
         \begin{center}
             \includegraphics{disco.png}\\[4ex]
             {\huge \@title} \\
+            { Relazione della prova finale } \\
             {\@author} \\
             {\@date} \\
             Tutor: \textit{Dott}. Ciccolella Simone \\
@@ -61,9 +61,9 @@
 \pagenumbering{arabic}
 
 \input{0_Thanks.tex}
-\input{1_Introduction.tex}
-\input{2_History.tex}
-\input{3_Methods.tex}
+\input{Chapter1/main.tex}
+\input{Chapter2/main.tex}
+\input{Chapter3/main.tex}
 
 \printbibliography
 
