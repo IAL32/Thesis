@@ -3,12 +3,14 @@
 \usepackage{csquotes}
 \usepackage{amsmath, amssymb, amsfonts, latexsym}
 \usepackage[italian]{babel}
-\usepackage{geometry}                         
+\usepackage{geometry}
 \geometry{top=21mm,bottom=21mm}
 \usepackage{graphicx}
+\usepackage{wrapfig}
 \usepackage[lofdepth,lotdepth]{subfig}
+\setcounter{secnumdepth}{5}
 \usepackage{pdfpages}
-\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=black]{hyperref}
+\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=blue]{hyperref}
 \usepackage{float}
 \usepackage{booktabs}
 \batchmode
@@ -19,6 +21,7 @@
 \pagestyle{fancy}
 \usepackage{pgfplots}
 \pgfplotsset{compat=newest}
+
 
 \lhead{E3101Q - Informatica}
 \chead{}
@@ -56,14 +59,16 @@
 
 \newpage
 \tableofcontents
-\listoffigures
-\listoftables
 \pagenumbering{arabic}
 
-\input{0_Thanks.tex}
-\input{Chapter1/main.tex}
-\input{Chapter2/main.tex}
-\input{Chapter3/main.tex}
+\input{Thanks.tex}
+\input{Prefazione.tex}
+\foreach \i in {00, 01, 02, ..., 05} {%
+    \edef\FileName{Chapters/chapter_\i}%     The % here are necessary to eliminate any
+    \IfFileExists{\FileName}{%  spurious spaces that may get inserted
+       \input{\FileName}%       at these points
+    }
+}
 
 \printbibliography
 
