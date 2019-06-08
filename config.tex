@@ -1,0 +1,43 @@
+\geometry{top=21mm,bottom=21mm}
+\setcounter{secnumdepth}{5}
+\batchmode
+\bibliography{bibliography}
+\pgfplotsset{compat=newest}
+\pagestyle{fancy}
+
+\newcommand{\M}[1]{$\mathrm{#1}$}
+
+% Adenina
+\def \adenina{
+	\let\substfont=\sffamily
+	\let\substfontsize=\footnotesize
+	%\changeunitlength{0.1pt}
+	\purinev{4==NH\M{_2};6==H;2==H;1==H}
+}
+
+% Guanina
+\def \guanina{
+	\let\substfont=\sffamily
+	\let\substfontsize=\footnotesize
+	%\changeunitlength{0.1pt}
+	\purinev{4D==O;5==H;6==NH\M{_2};2==H;1==H}
+}
+
+% Citosina
+\def \citosina{
+	\let\substfont=\sffamily
+	\let\substfontsize=\footnotesize
+	%\changeunitlength{0.1pt}
+	\pyrimidinevi[e]{1==H;2D==O;4D==NH\M{_2};5==H;6==H}
+}
+
+% Timina
+\def \timina{
+	\let\substfont=\sffamily
+	\let\substfontsize=\footnotesize
+	%\changeunitlength{0.1pt}
+	\pyrimidinevi[e]{1==H;2D==O;3==H;4D==O;5==CH\M{_3};6==H}
+}
+
+% rotates text by #4 degrees
+\newcommand{\mcrot}[4]{\multicolumn{#1}{#2}{\rlap{\rotatebox{#3}{#4}~}}} 

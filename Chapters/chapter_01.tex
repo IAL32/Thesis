@@ -33,12 +33,42 @@ Le cellule costituiscono le fondamenta di tutti gli organismi viventi. Il corpo 
 
 \begin{wrapfigure}{r}{0.5 \textwidth}
     \centering
-    \includegraphics[width=0.75 \linewidth]{./Images/1_dna.jpg}
+    \includegraphics[width=0.25 \textwidth]{./Images/1_dna.png}
     \caption{Il DNA}
     \label{fig:dna}
 \end{wrapfigure}
 
-Il \textit{DNA}, o \textit{acido desossiribonucleico}, è il materiale erediratio negli umani e quasi tutti gli altri organismi viventi. Quasi ogni cellula presente all'interno del corpo umano ha lo stesso identico DNA. La maggior parte del DNA è situata all'interno del nucleo della cellula (dove è chiamato \textit{DNA cellulare}), ma può trovarsi anche all'interno dei mitocondri, organi cellulari addetti alla respirazione cellulare. Le informazioni nel DNA sono conservate come un codice formato da quattro componenti chimici base (anche dette basi azotate): \textbf{adenina} (A), \textbf{guanina} (G), \textbf{citosina} (C), e timina (T). L'ordine, o la sequenza, di queste basi determina le informazioni disponibili per costruire e mantenere operativo un organismo.
+
+Il \textit{DNA}, o \textit{acido desossiribonucleico}, è il materiale erediratio negli umani e quasi tutti gli altri organismi viventi. Quasi ogni cellula presente all'interno del corpo umano ha lo stesso identico DNA. La maggior parte del DNA è situata all'interno del nucleo della cellula (dove è chiamato \textit{DNA cellulare}), ma può trovarsi anche all'interno dei mitocondri, organi cellulari addetti alla respirazione cellulare. Le informazioni nel DNA sono conservate come un codice formato da quattro componenti chimici base (anche dette basi azotate): \textbf{adenina} (A) (\autoref{fig:dna-adenina}), \textbf{guanina} (G) (\autoref{fig:dna-guanina}), \textbf{citosina} (C) (\autoref{fig:dna-citosina}), e \textbf{timina} (T) (\autoref{fig:dna-timina}). L'ordine, o la sequenza, di queste basi determina le informazioni disponibili per costruire e mantenere operativo un organismo.
+
+\begin{figure}[!h]
+    \begin{minipage}{0.5 \textwidth}
+        \centering
+        \adenina
+        \caption{Adenina (A)}
+        \label{fig:dna-adenina}
+    \end{minipage}
+    \begin{minipage}{0.5 \textwidth}
+        \centering
+        \guanina
+        \caption{Guanina (G)}
+        \label{fig:dna-guanina}
+    \end{minipage}
+\end{figure}
+\begin{figure}[!h]
+    \begin{minipage}{0.5 \textwidth}
+        \centering
+        \citosina
+        \caption{Citosina (C)}
+        \label{fig:dna-citosina}
+    \end{minipage}
+    \begin{minipage}{0.5 \textwidth}
+        \centering
+        \timina
+        \caption{Timina (T)}
+        \label{fig:dna-timina}
+    \end{minipage}
+\end{figure}
 
 Le basi del DNA si combinano tra di loro, A con T e C con G, in maniera tale da formare unità chiamate \textit{coppie base}. Assieme ad una molecola di zucchero ed una di fosfato, le basi costituiscono quello che è definito un \textit{nucleotide}. I nucleotidi sono disposti in due lunghi fili che formano una spirale chiamata \textit{doppia elica}.
 
@@ -68,6 +98,7 @@ La fase di divisione di una cellula è cruciale. Si stima che durante la replica
 \label{chap:intro-models}
 
 In filogenetica il DNA può essere rappresentato come una sequenza di simboli, utilizzando le basi (\autoref{chap:intro-biology-dna}) corrispondenti alle posizioni degli allineamenti come caratteri.
+
 \begin{figure}[h]
     \centering
     AGTCCAGGACAT \qquad GGCATTCAATCA
@@ -75,4 +106,34 @@ In filogenetica il DNA può essere rappresentato come una sequenza di simboli, u
     \label{fig:dna-sequence}
 \end{figure}
 
-Questo tipo di sequenza è un esempio di \textit{modello di sostituzione}, un modello che in biologia descrive il processo per cui una sequenza di simboli cambia in un'altra, modificandone i tratti che rappresenta. In cladistica \footnote{Metodo di classificazione dei viventi che si basa sul grado di parentela, ovvero sulla distanza nel tempo dell'ultimo progenitore comune}
+La \autoref{fig:dna-sequence} rappresenta un esempio di \textit{modello di sostituzione}, un modello che in biologia descrive il processo per cui una sequenza di simboli cambia in un'altra, modificandone i tratti che rappresenta. In cladistica\footnote{Metodo di classificazione dei viventi che si basa sul grado di parentela, ovvero sulla distanza nel tempo dell'ultimo progenitore comune} viene utilizzato per rappresentare delle caratteristiche presenti, utilizzando il carattere ``1'', o assenti, utilizzando il carattere ``0'', in una specie.
+
+\begin{figure}[h]
+    \centering
+    10011 \qquad 01110
+    \caption{Esempio di modello di sostituzione in cladistica}
+    \label{fig:cladistica-sequence}
+\end{figure}
+
+L'esempio in \autoref{fig:cladistica-sequence} può ipoteticamente rappresentare due specie: la prima può digerire i latticini, non depone uova, è una creatura a sangue freddo, vola e sa nuotare; la seconda non può digerire i latticini, può deporre uova, è una creatura a sangue caldo, vola e non sa nuotare.
+
+Lo stesso ragionamento può essere utilizzato per rappresentare le \textit{mutazioni} acquisite o perse da una cellula nel corso della sua vita.
+
+\begin{figure}[!h]
+    \centering
+    \begin{tabular}{*{20}{c}}
+        \mcrot{1}{l}{60}{BBS4} & \mcrot{1}{l}{60}{CAMSAP1} & \mcrot{1}{l}{60}{DOCK3} & \mcrot{1}{l}{60}{EPHA10} & \mcrot{1}{l}{60}{EYA4} & \mcrot{1}{l}{60}{HIPK4} & \mcrot{1}{l}{60}{HIST1H2AG} & \mcrot{1}{l}{60}{INTS8} & \mcrot{1}{l}{60}{MAL2} & \mcrot{1}{l}{60}{MYOM3} & \mcrot{1}{l}{60}{OAZ3} & \mcrot{1}{l}{60}{PPIG} & \mcrot{1}{l}{60}{PTPRQ} & \mcrot{1}{l}{60}{RGS11} & \mcrot{1}{l}{60}{RYR3} & \mcrot{1}{l}{60}{SERPINF2} & \mcrot{1}{l}{60}{SMOC1} & \mcrot{1}{l}{60}{TTN} & \mcrot{1}{l}{60}{TUFT1} & \mcrot{1}{l}{60}{ZNF540}\\
+        \midrule \midrule
+        1 & 1 & 1 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 1 & 0 & 0 \\
+        1 & 1 & 1 & 1 & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 \\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 \\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 \\
+        1 & 1 & 1 & 1 & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 \\
+        1 & 1 & 1 & 1 & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1
+    \end{tabular}
+    \caption{Esempio di modello di sostituzione con cellule (righe) e mutazioni (colonne)}
+    \label{fig:dna-cell-mutations}
+\end{figure}
