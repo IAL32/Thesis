@@ -7,7 +7,7 @@
 
 \section{Descrizione}
 \label{chap:intro-description}
-Recenti sviluppi nel trattamento mirato di questo gruppo di malattie fa affidamento sull'accurata inferenza della progressione e dell'evoluzione del cancro \cite{Ciccolella268243}, rivelandosi una . Il cancro è la seconda causa più comune di morte \cite{worldindatacancer}, arrivando nel 2017 a contare il 17.08\% delle morti nel mondo, per un totale di 8.93 \textit{milioni} di decessi.
+Recenti sviluppi nel trattamento mirato di questo gruppo di malattie fa affidamento sull'accurata inferenza della progressione e dell'evoluzione del cancro \cite{SCiccolellaSasc}, rivelandosi una . Il cancro è la seconda causa più comune di morte \cite{worldindatacancer}, arrivando nel 2017 a contare il 17.08\% delle morti nel mondo, per un totale di 8.93 \textit{milioni} di decessi.
 
 %%%%
 
@@ -20,8 +20,7 @@ Era il 1869 quando venne isolato per la prima volta nella storia dell'umanità l
 
 \section{Nozioni di biologia}
 \label{chap:intro-biology}
-
-In questa sezione verranno introdotte nozioni inerenti al lavoro svolto, al fine di poter agevolarne la replicazione e la comprensione.
+Al fine di poter comprendere appieno il lavoro svolto, in questa sezione verranno trattate nozioni base di biologia, partendo dalla cellula fino alla rappresentazione in modello del DNA in essa contenuta.
 
 \subsection{La cellula}
 \label{chap:intro-biology-cell}
@@ -94,7 +93,7 @@ Un'importante proprietà del DNA è che si può replicare, o fare copie di se st
 
 La fase di divisione di una cellula è cruciale. Si stima che durante la replicazione, solo una base su $10^9$ \cite{DNAReplication} sia errata. Vari fattori possono inoltre influenzare questa delicata fase, come l'esposizione ad agenti chimici ed irradiazione. Questi errori molto spesso sono corretti in vari modi, ma quando questo non basta, possono essere la causa scatenante che porta una cellula a diventare \textit{cancerogena}. In generale, una cellula è cancerogena quando inizia a moltiplicarsi senza controllo. Quando questo processo avviene in un tessuto solido come un organo (\autoref{fig:kidney-cancer}), muscolo od ossa, prende il nome di \textit{tumore}. Ci sono due tipi di tumore: \textit{maligno} (cancerogeno) e \textit{benigno} (non cancerogeno). I primi possono invadere i tessuti circostanti nel corpo, e mentre crescono, alcune cellule possono viaggiare attraverso il sangue (\autoref{fig:metastasi}) o altri mezzi a formare delle \textit{metastasi}, dei tumori secondari \cite{differencecancertumor:online}, mentre gli ultimi conservano le caratteristiche del tessuto di origine e non hanno la tendenza di invadere gliorgani circostanti. Un tumore benigno non è quindi un cancro, ma solo una massa che può raggiungere dimensioni considerevoli, ma non si diffonde in altre parti del corpo.
 
-\section{Modello di sostituzione}
+\section{Modelli di sostituzione}
 \label{chap:intro-models}
 
 In filogenetica il DNA può essere rappresentato come una sequenza di simboli, utilizzando le basi (\autoref{chap:intro-biology-dna}) corrispondenti alle posizioni degli allineamenti come caratteri.
@@ -106,7 +105,7 @@ In filogenetica il DNA può essere rappresentato come una sequenza di simboli, u
     \label{fig:dna-sequence}
 \end{figure}
 
-La \autoref{fig:dna-sequence} rappresenta un esempio di \textit{modello di sostituzione}, un modello che in biologia descrive il processo per cui una sequenza di simboli cambia in un'altra, modificandone i tratti che rappresenta. In cladistica\footnote{Metodo di classificazione dei viventi che si basa sul grado di parentela, ovvero sulla distanza nel tempo dell'ultimo progenitore comune} viene utilizzato per rappresentare delle caratteristiche presenti, utilizzando il carattere ``1'', o assenti, utilizzando il carattere ``0'', in una specie.
+La \autoref{fig:dna-sequence} rappresenta un esempio di \textit{modello di sostituzione}, un modello che in biologia descrive il processo per cui una sequenza di simboli cambia in un'altra, modificandone i tratti che rappresenta. In cladistica\footnote{Metodo di classificazione degli esseri viventi che si basa sul grado di parentela, ovvero sulla distanza nel tempo dell'ultimo progenitore comune} viene utilizzato per rappresentare delle caratteristiche presenti, utilizzando il carattere ``1'', o assenti, utilizzando il carattere ``0'', in una specie.
 
 \begin{figure}[h]
     \centering
@@ -115,9 +114,7 @@ La \autoref{fig:dna-sequence} rappresenta un esempio di \textit{modello di sosti
     \label{fig:cladistica-sequence}
 \end{figure}
 
-L'esempio in \autoref{fig:cladistica-sequence} può ipoteticamente rappresentare due specie: la prima può digerire i latticini, non depone uova, è una creatura a sangue freddo, vola e sa nuotare; la seconda non può digerire i latticini, può deporre uova, è una creatura a sangue caldo, vola e non sa nuotare.
-
-Lo stesso ragionamento può essere utilizzato per rappresentare le \textit{mutazioni} acquisite o perse da una cellula nel corso della sua vita.
+L'esempio in \autoref{fig:cladistica-sequence} può ipoteticamente rappresentare due specie: la prima può digerire i latticini, non depone uova, è una creatura a sangue freddo, vola e sa nuotare; la seconda non può digerire i latticini, può deporre uova, è una creatura a sangue caldo, vola e non sa nuotare. Lo stesso ragionamento può essere utilizzato per rappresentare le \textit{mutazioni} presenti all'interno di una cellula nel caso di cellule tumorali (\autoref{fig:dna-cell-mutations}).
 
 \begin{figure}[!h]
     \centering
@@ -132,8 +129,72 @@ Lo stesso ragionamento può essere utilizzato per rappresentare le \textit{mutaz
         1 & 1 & 1 & 1 & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 0 \\
         0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 \\
         1 & 1 & 1 & 1 & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 0 \\
-        0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 \\
+        \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+        0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 \\
+1 & 1 & 1 & 1 & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 0
     \end{tabular}
-    \caption{Esempio di modello di sostituzione con cellule (righe) e mutazioni (colonne)}
+    \caption{Dataset di cellule tumorali e delle relative mutazioni di un paziente}
+    % TODO: aggiungere source, chiedere a @sciccolella
     \label{fig:dna-cell-mutations}
 \end{figure}
+
+\section{Richiami di ottimizzazione matematica}
+\label{chap:intro-optim}
+In questa sezione verranno trattate inizialmente nozioni base di ottimizzazione matematica, in particolare sulla ricerca locale dell'ottimo, per poi introdurre due tecniche di ottimizzazione che verranno utilizzate nel \autoref{chap:art}.
+
+\subsection{Hill climbing}
+\label{chap:intro-optim-hill}
+In matematica, \textit{hill climbing} è un algoritmo di ricerca dell'ottimo, migliorando la soluzione ripetutamente fino a quando non si raggiunge un criterio di ottimalità. L'idea è quella di partire da una soluzione sub-ottimale, che per analogia viene paragonato al partire alla base della collina, per poi migliorare la soluzione ottimale, che viene comparato allo scalare la collina, fino al raggiuntimento di una condizione, cioè raggiungere la cima della collina. In maniera generale, si può modellare nella forma descritta in \autoref{algo:hill-climbing}.
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    inizializzazione \\
+    \While{non raggiunta condizione di ottimalità} {
+        seleziona e applica nuova operazione \\
+        \If{nuovo stato è ottimo} {
+            termina
+        }
+        \If{nuovo stato è migliore del precedente} {
+            stato = nuovo stato
+        }
+    }
+    \caption{Hill Climbing}
+    \label{algo:hill-climbing}
+\end{algorithm}%
+
+Esistono numerose variazioni di questo algoritmo, ma le più conosciute sono \textit{simple hill climbing}, \textit{steepest hill climbing} e \textit{stocasting hill climbing}, applicate a seconda delle proprietà del problema in questione. Un esempio di funzione da ottimizzare, in questo caso massimizzare, può essere come quella rappresentata in \autoref{fig:intro-optim-hill-paraboloid}, dove esiste un solo ottimo locale ($f(x, y) = 0$) e la funzione è monomodale\footnote{Una funzione monomodale è una funzione con un solo ottimo locale, che corrisponde anche all'ottimo globale della funzione stessa}. In questo caso, il \textit{simple hill climbing} e lo \textit{steepest hill climbing} ottengono sempre il risultato migliore.
+
+\begin{figure}[h]
+    \begin{minipage}{0.5 \textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}
+                \addplot3[surf,]
+                {- x^2 - y^2};
+                \legend{$-x^2 - y^2$};
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Paraboloide, monomodale}
+        \label{fig:intro-optim-hill-paraboloid}
+    \end{minipage}
+    \qquad
+    \begin{minipage}{0.5 \textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}
+                \addplot3[surf,] {25*(sin(deg(x))^2 + sin(deg(y))^2)+x^2+y^2};
+                \legend{\small $x^2 + y^2 + 25(sin^2(x) + sin^2(y))$}
+            \end{axis}
+        \end{tikzpicture}
+        \caption{``Eggcrate'', plurimodale}
+        \label{fig:intro-optim-hill-egg}
+    \end{minipage}
+\end{figure}
+
+D'altro canto, funzioni plurimodali\footnote{Una funzione plurimodale è una funzione con più di un ottimo locale. Non è detto che esista un unico ottimo globale} come ``Eggcrate'' rappresentato in \autoref{fig:intro-optim-hill-egg}, dove le tecniche citate precedentemente falliscono miseramente. Entrano quindi in gioco algoritmi di ricerca locale che ammettono, con un certo grado di libertà, di accettare un risultato peggiore di quello attuale, nella speranza di non rimanere intrappolati in un ottimo locale.
+
+\subsection{Simulated Annealing}
+\label{chap:intro-optim-sa}
+Per cambiare e migliorare delle caratteristiche di un solido, in metallurgia viene utilizzata la tecnica della \textit{ricottura} (in inglese ``anneal''), dove i solidi come l'acciaio, bronzo o alluminio, vengono portati ad altissime temperature, per essere poi raffreddati ad una certa velocità chiamata \textit{cooling rate}, che determina le caratteristiche finali del metallo. Alle alte temperature, gli atomi si muovono molto velocemente e rompono le strutture cristalline che avevano formato precedentemente. Mano a mano che la temperatura cala, gli atomi rallentano, e si recristallizzano. Analogamente, la tecnica matematica del \textit{simulated annealing} è un algoritmo di ricerca che utilizza la temperatura per riuscire a scappare da eventuali ottimi locali. Quando la temperatura è alta, l'algoritmo è meno propenso ad accettare nuovi soluzioni, anche se migliori. Mano a mano che la temperatura diminuisce, la probabilità che si accetti una soluzione migliore aumenta, fino al raggiuntimento della condizione di ottimalità, cioè quando la temperatura non può più scendere, ed il risultato non può che essere un ottimo locale.
+Questa funzione però molto spesso fallisce, specie se si cerca di ottimizzare una funzione plurimodale come in \autoref{fig:intro-optim-hill-egg}. 
