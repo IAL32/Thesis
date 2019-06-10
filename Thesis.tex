@@ -68,7 +68,7 @@
 
 \input{Thanks.tex}
 \input{Prefazione.tex}
-\foreach \i in {00, 01, 02, ..., 05} {%
+\foreach \i in {00, 01} {%
     \edef\FileName{Chapters/chapter_\i}%     The % here are necessary to eliminate any
     \IfFileExists{\FileName}{%  spurious spaces that may get inserted
        \input{\FileName}%       at these points
