@@ -226,7 +226,6 @@ Per cambiare e migliorare delle caratteristiche di un solido, in metallurgia vie
 Analogamente, la tecnica matematica del \textit{simulated annealing} è un algoritmo di ricerca che utilizza la temperatura per riuscire a scappare da eventuali ottimi locali. Quando la temperatura è alta, l'algoritmo è meno propenso ad accettare nuovi soluzioni, anche se migliori. Mano a mano che la temperatura diminuisce, la probabilità che si accetti una soluzione migliore aumenta, fino al raggiuntimento della condizione di ottimalità, cioè quando la temperatura non può più scendere, ed il risultato non può che essere un ottimo locale.
 
 \begin{algorithm}[h]
-    \caption{Simulated Annealing}
     $best \gets random()$ \\
     $T \gets 1.0$ \\
     $T_{min} \gets 0.0001$ \\
@@ -239,6 +238,8 @@ Analogamente, la tecnica matematica del \textit{simulated annealing} è un algor
         }
         $T = T * cooling\_rate$
     }
+    \label{algo:simulated-annealing}
+    \caption{Simulated Annealing}
 \end{algorithm}
 
 Questa funzione però molto spesso fallisce, specie se si cerca di ottimizzare una funzione plurimodale come in \autoref{fig:intro-optim-hill-egg}.
@@ -280,11 +281,40 @@ Nell'algoritmo, il branco di pesci viene sfruttato come analogia per lo \textit{
                     coordinates { (0,0) (3,5) (6,2) (9,7) };
             \end{axis}
             \end{tikzpicture}
-        \caption{\small Somma vettoriale tra $p_{best}$ e $s_{best}$}
+        \caption{\small Somma vettoriale tra $p_i$ e $g$}
         \label{fig:intro-optim-pso-sum}
     \end{minipage}
 \end{figure}
 
-Ad ogni iterazione, la posizione di ogni particella viene aggiornata per ogni dimensione del problema, basandosi sulla migliore posizione della particella $p_{best}$ e sulla migliore posizione globale dello swarm $s_{best}$ (in \autoref{fig:intro-optim-pso-sum} si vede un esempio di questa combinazione, dove la posizione finale del vettore è data dalla combinazione di due valori). Questa combinazione dei due valori migliori risolve il problema di rimanere intrappolati in un ottimo locale che presentano gli algoritmi visti nella \autoref{chap:intro-optim-hill}. Con il proseguire dell'algoritmo sarà possibile osservare che le singole particelle mano a mano convergono verso un ottimo locale, o di più, se la funzione da ottimizzare è multimodale (come in \autoref{fig:intro-optim-hill-egg}).
+Ad ogni iterazione, la posizione di ogni particella viene aggiornata per ogni dimensione del problema, basandosi sulla migliore posizione della particella $p_{i}$ e sulla migliore posizione globale dello swarm $g$ (in \autoref{fig:intro-optim-pso-sum} si vede un esempio di questa combinazione, dove la posizione finale del vettore è data dalla combinazione di due valori). Questa combinazione dei due valori migliori risolve il problema di rimanere intrappolati in un ottimo locale che presentano gli algoritmi visti nella \autoref{chap:intro-optim-hill}. Con il proseguire dell'algoritmo sarà possibile osservare che le singole particelle mano a mano convergono verso un ottimo locale, o di più, se la funzione da ottimizzare è multimodale (come in \autoref{fig:intro-optim-hill-egg}). È possibile inoltre introdurre la \textit{velocità} come parte dell'algoritmo, al fine di influire su quanto velocemente una particella si muove verso la soluzione, che in algebra vettoriale si traduce nella modifica del modulo del vettore di spostamento.
 
+\begin{algorithm}[!h]
+    \caption{Particle Swarm Optimization}
+    $n = $ numero particelle \\
+    $d = $ numero dimensioni dello spazio di ricerca \\
+    \For{$i \gets 1$ \KwTo $n$}{
+        $x_i \sim U(b_{low}, b_{up})$ \Comment{Inizializzo ogni particella con un valore random nel mio spazio di ricerca, delimitato da un lower bound $b_{low}$ ed un $b_{up}$}
+        $p_i \gets x_i$ \Comment{Inizializzo la posizione migliore della particella alla sua posizione iniziale}
+        \If{$f(p_i) > f(g)$}{
+            $g \gets p_i$ \Comment{Aggiorno la posizione migliore globale}
+        }
+        $v_i \sim U(-\abs{b_{up} - b_{low}}, \abs{b_{up} - b_{low}})$ \Comment{Inizializzo la velocità iniziale della particella}
+    }
+    \While{criterio di terminazione non soddisfatto} {
+        \For{$i \gets 1$ \KwTo $n$} {
+            \For{$d \gets 1$ \KwTo $m$} {
+                $r_p, r_g \sim U(0, 1)$ \Comment{Parametri di casualità}
+                $v_{i, d} \gets \omega v_{i, d} + \phi_p r_p (p_{i, d} - x_{i, d}) + \phi_g r_g (g_d - x_{i, d})$ \Comment{Aggiorno la velocità della particella}
+                $x_i \gets x_i + v_i$ \Comment{Aggiorno la posizione della particella}
+                \If{$f(x_i) > f(p_i)$}{
+                    $p_i \gets x_i$ \Comment{Aggiorno la posizione migliore della particella}
+                    \If{$f(p_i) > f(g)$}{
+                        $g \gets p_i$ \Comment{Aggiorno la posizione migliore dello swarm}
+                    }
+                }
+            }
+        }
+    }
+    \label{algo:particle-swarm-optimization}
+\end{algorithm}
 

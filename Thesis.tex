@@ -5,7 +5,7 @@
 \usepackage[paper=a4paper,margin=1in]{geometry}
 \usepackage{csquotes}
 % Formule matematiche
-\usepackage{amsmath, amssymb, amsfonts, latexsym}
+\usepackage{amsmath, amssymb, amsfonts, latexsym, commath}
 \usepackage[italian]{babel}
 \usepackage{setspace}
 % Inserimento di immagini
@@ -97,7 +97,7 @@
 
 \input{Thanks.tex}
 \input{Prefazione.tex}
-\foreach \i in {00, 01} {%
+\foreach \i in {00, 01, 02} {%
     \edef\FileName{Chapters/chapter_\i}%     The % here are necessary to eliminate any
     \IfFileExists{\FileName}{%  spurious spaces that may get inserted
        \input{\FileName}%       at these points
