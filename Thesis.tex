@@ -1,11 +1,13 @@
-\documentclass[a4paper,12pt,openright,twoside]{book}
+\documentclass[a4paper,12pt]{book}
 % Per gli accenti e caratteri speciali
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[paper=a4paper,margin=1in]{geometry}
 \usepackage{csquotes}
 % Formule matematiche
 \usepackage{amsmath, amssymb, amsfonts, latexsym}
 \usepackage[italian]{babel}
-\usepackage{geometry}
+\usepackage{setspace}
 % Inserimento di immagini
 \usepackage{graphicx}
 % Per le formule di biologia
@@ -22,6 +24,12 @@
 \usepackage{fancyhdr}
 % Grafici carini
 \usepackage{pgfplots}
+\usepackage{tikz}
+% Renderizzo solo quando necessario, se già renderizzato
+% viene incluso direttamente, velocizzando drasticamente
+% il tempo di compilazione
+\usetikzlibrary{external}
+\tikzexternalize % activate!
 % Algoritmi
 \usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 
@@ -44,22 +52,43 @@
 \begin{document}
 %%%%%%%%%%%%%%%%
 
-\makeatletter
-    \begin{titlepage}
-        \begin{center}
-            \includegraphics{disco.png}\\[4ex]
-            {\huge \@title} \\
-            { Relazione della prova finale } \\
-            {\@author} \\
-            {\@date} \\
-            Tutor: \textit{Dott}. Ciccolella Simone \\
-            Relatore: \textit{Prof}. Della Vedova Gianluca
-        \end{center}
-    \end{titlepage}
-\makeatother
-
-\pdfbookmark[1]{Titolo}{titolo} 	% Bookmark per il titolo
-
+% Frontespizio da https://github.com/lucach/frontespizio-unimib
+\begin{titlepage}
+    \noindent
+    \begin{minipage}[t]{0.19\textwidth}
+        \vspace{-4mm}{\includegraphics[scale=1.15]{logo_unimib.pdf}}
+    \end{minipage}
+    \begin{minipage}[t]{0.81\textwidth}
+        \setstretch{1.42}
+        \textsc{Università degli Studi di Milano - Bicocca} \\
+        \textbf{Scuola di Scienze} \\
+        \textbf{Dipartimento di Informatica, Sistemistica e Comunicazione} \\
+        \textbf{Corso di laurea in Informatica} \\
+        \par
+    \end{minipage}
+    \vspace{40mm}
+    \begin{center}
+        \large \setstretch{1.2}
+        \textbf{Inferenza di alberi tumorali tramite \\ Particle Swarm Optimization}
+        \par
+    \end{center}
+    \vspace{50mm}
+    \noindent
+    {\large \textbf{Relatore:} Prof. Della Vedova Gianluca } \\
+    \noindent
+    {\large \textbf{Correlatore:} Dott. Ciccolella Simone}
+    \vspace{15mm}
+    \begin{flushright}
+        {\large \textbf{Relazione della prova finale di:}} \\
+        \large{Castro Tenemaya Adrian David} \\
+        \large{Matricola 816015}
+    \end{flushright}
+    \vspace{40mm}
+    \begin{center}
+        {\large{\bf Anno Accademico 2016-2019}}
+    \end{center}
+    \restoregeometry
+\end{titlepage}
 % \maketitle
 
 \newpage

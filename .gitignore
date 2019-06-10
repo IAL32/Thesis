@@ -271,3 +271,8 @@ TSWLatexianTemp*
 *.glstex
 
 # End of https://www.gitignore.io/api/latex
+
+# tikzexternalize auxiliary files
+*-figure[0-9].pdf
+*-figure[0-9][0-9].pdf
+*-figure[0-9][0-9][0-9].pdf

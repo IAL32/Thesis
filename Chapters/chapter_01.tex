@@ -170,7 +170,7 @@ Esistono numerose variazioni di questo algoritmo, ma le più conosciute sono \te
         \centering
         \begin{tikzpicture}
             \begin{axis}[samples=15,small]%
-                \addplot3[surf,shader=interp]
+                \addplot3[surf]
                 {- x^2 - y^2};
                 \legend{$-x^2 - y^2$};
             \end{axis}
@@ -183,7 +183,7 @@ Esistono numerose variazioni di questo algoritmo, ma le più conosciute sono \te
         \centering
         \begin{tikzpicture}
             \begin{axis}[samples=15,small]%
-                \addplot3[surf,shader=interp] {25*(sin(deg(x))^2 + sin(deg(y))^2)+x^2+y^2};
+                \addplot3[surf] {25*(sin(deg(x))^2 + sin(deg(y))^2)+x^2+y^2};
                 \legend{\small $x^2 + y^2 + 25(sin^2(x) + sin^2(y))$}
             \end{axis}
         \end{tikzpicture}
@@ -196,24 +196,24 @@ Esistono numerose variazioni di questo algoritmo, ma le più conosciute sono \te
         \centering
         \begin{tikzpicture}
             \begin{axis}[samples=15,view={0}{90},small]%
-                \addplot3[surf,shader=interp]
+                \addplot3[surf]
                 {- x^2 - y^2};
                 \legend{$-x^2 - y^2$};
             \end{axis}
         \end{tikzpicture}
         \caption{Paraboloide, monomodale}
-        \label{fig:intro-optim-hill-paraboloid}
+        \label{fig:intro-optim-hill-paraboloid-contour}
     \end{minipage}
     \begin{minipage}{0.5 \textwidth}
         \centering
         \begin{tikzpicture}
             \begin{axis}[samples=15,view={0}{90},small]%
-                \addplot3[surf,shader=interp] {25*(sin(deg(x))^2 + sin(deg(y))^2)+x^2+y^2};
+                \addplot3[surf] {25*(sin(deg(x))^2 + sin(deg(y))^2)+x^2+y^2};
                 \legend{\small $x^2 + y^2 + 25(sin^2(x) + sin^2(y))$}
             \end{axis}
         \end{tikzpicture}
         \caption{``Eggcrate'', plurimodale}
-        \label{fig:intro-optim-hill-egg}
+        \label{fig:intro-optim-hill-egg-contour}
     \end{minipage}
 \end{figure}
 
@@ -245,9 +245,9 @@ Questa funzione però molto spesso fallisce, specie se si cerca di ottimizzare u
 
 \subsection{Particle Swarm Optimization}
 \label{chap:intro-optim-pso}
-Un'altra tecnica di ricerca dell'ottimo è quella del \textit{particle swarm optimization}. Questo algoritmo nasce inizialmente come simulazione del comportamente sociale di stormi di uccelli che si sincronizzano in volo, o un branco di pesci alla ricerca di cibo \cite{pso}: membri individuali del branco possono trarre vantaggio dalle scoperte ed esperienze passate di tutti gli altri membri durante la ricerca del cibo, un vantaggio che può rivelarsi decisivo per superare la competizione. Questa è un'ipotesi fondamentale per poter definire il \textit{particle swarm optimization}.
+Un'altra tecnica di ricerca dell'ottimo è quella del \textit{particle swarm optimization}. Questo algoritmo iterativo nasce inizialmente come simulazione del comportamente sociale di stormi di uccelli che si sincronizzano in volo, o un branco di pesci alla ricerca di cibo \cite{pso}: membri individuali del branco possono trarre vantaggio dalle scoperte ed esperienze passate di tutti gli altri membri durante la ricerca del cibo, un vantaggio che può rivelarsi decisivo per superare la competizione. Questa è un'ipotesi fondamentale per poter definire il \textit{particle swarm optimization}.
 
-Nell'algoritmo, il branco di pesci viene sfruttato come analogia per lo \textit{swarm}, che indica l'insieme degli elementi appartenenti ad una popolazione, questi indicati come \textit{particelle} dello swarm.
+Nell'algoritmo, il branco di pesci viene sfruttato come analogia per lo \textit{swarm} (rappresentato in \autoref{fig:intro-optim-pso-swarm}), che indica l'insieme degli elementi appartenenti ad una popolazione, questi indicati come \textit{particelle} dello swarm.
 
 \begin{figure}[!h]
     \begin{minipage}{0.5 \textwidth}
@@ -281,7 +281,10 @@ Nell'algoritmo, il branco di pesci viene sfruttato come analogia per lo \textit{
             \end{axis}
             \end{tikzpicture}
         \caption{\small Somma vettoriale tra $p_{best}$ e $s_{best}$}
-        \label{fig:intro-optim-pso-swarm}
+        \label{fig:intro-optim-pso-sum}
     \end{minipage}
 \end{figure}
+
+Ad ogni iterazione, la posizione di ogni particella viene aggiornata per ogni dimensione del problema, basandosi sulla migliore posizione della particella $p_{best}$ e sulla migliore posizione globale dello swarm $s_{best}$ (in \autoref{fig:intro-optim-pso-sum} si vede un esempio di questa combinazione, dove la posizione finale del vettore è data dalla combinazione di due valori). Questa combinazione dei due valori migliori risolve il problema di rimanere intrappolati in un ottimo locale che presentano gli algoritmi visti nella \autoref{chap:intro-optim-hill}. Con il proseguire dell'algoritmo sarà possibile osservare che le singole particelle mano a mano convergono verso un ottimo locale, o di più, se la funzione da ottimizzare è multimodale (come in \autoref{fig:intro-optim-hill-egg}).
+
 
