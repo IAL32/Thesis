@@ -14,7 +14,8 @@
 % Per le formule di biologia
 \usepackage{xymtex}
 \usepackage{wrapfig}
-\usepackage[lofdepth,lotdepth]{subfig}
+\usepackage{subcaption}
+% \usepackage[lofdepth,lotdepth]{subfig}
 \usepackage{pdfpages}
 % Link esterni e interni
 \usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=blue]{hyperref}
@@ -34,7 +35,7 @@
 % Algoritmi
 \usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 
-\input{config.tex}
+\input{config}
 
 \pagenumbering{roman}
 
@@ -96,9 +97,10 @@
 \tableofcontents
 \pagenumbering{arabic}
 
-\input{Thanks.tex}
-\input{Prefazione.tex}
-\foreach \i in {00, 01, 02} {%
+\input{Thanks}
+\input{Prefazione}
+\input{Abstract}
+\foreach \i in {01} {%
     \edef\FileName{Chapters/chapter_\i}%     The % here are necessary to eliminate any
     \IfFileExists{\FileName}{%  spurious spaces that may get inserted
        \input{\FileName}%       at these points
