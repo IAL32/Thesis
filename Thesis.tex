@@ -100,7 +100,7 @@
 \input{Thanks}
 \input{Prefazione}
 \input{Abstract}
-\foreach \i in {01} {%
+\foreach \i in {01,02,03} {%
     \edef\FileName{Chapters/chapter_\i}%     The % here are necessary to eliminate any
     \IfFileExists{\FileName}{%  spurious spaces that may get inserted
        \input{\FileName}%       at these points
@@ -108,6 +108,8 @@
 }
 
 \printbibliography
+
+% In order to be able to reconstruct phylogenetic trees of tumors, in the last years the infinite-sites model has been used, assuming tumoral progressions as an accumulation of mutations. Recent studies using the single-cell sequencing technique show, highlighting the presence of mutation losses, how this assumption is not always true. However there is a lack of tools that are able to infer the phylogeny of genetic trees while allowing loss of mutations. In this work it is presented a new tool
 
 %%%%%%%%%%%%%%
 \end{document}
