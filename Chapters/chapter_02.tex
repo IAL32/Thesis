@@ -8,17 +8,45 @@
 \section{Introduzione}
 \label{chap:art-intro}
 Con l'avvento delle tecnologie per il sequenziamento del DNA partendo da singole cellule (SCS), iniziano ad essere disponibili dati di alta qualità. Queste tecnologie forniscono il sequenziamento di dati da singole cellule, permettendo quindi di ricostruire l'albero filogenetico di una cellula. È però da tenere in considerazione l'alto tasso di errore associato a questo tipo di dati, innalzando di conseguenza il grado di difficoltà del processo di ricostruzione della filogenesi. 
-In questo capitolo, analizzeremo le tecnologie già presenti che hanno affrontato questa sfida. 
+In questo capitolo, analizzeremo le tecnologie già presenti che hanno affrontato questa sfida.
+
+\subsection{Modello degli errori single-cell}
+\label{chap:art-intro-model-matrix}
+I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nel \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà questo è un $1$:
+\begin{equation}
+    \label{eq:art-intro-model-matrix}
+    P(M_{i,j} | D_{i,j}) = \begin{cases}
+        1 - \alpha  & \texttt{if } M_{i,j} = 0, D_{i,j} = 0 \\
+        \beta       & \texttt{if } M_{i,j} = 0, D_{i,j} = 1 \\
+        \alpha      & \texttt{if } M_{i,j} = 1, D_{i,j} = 0 \\
+        1 - \beta   & \texttt{if } M_{i,j} = 1, D_{i,j} = 1
+    \end{cases}
+\end{equation}
 
 %%%%
 
 \section{SiFit: inferring tumor trees from single-cell sequencing data under finite-sites models}
 \label{chap:art-sifit}
-Il progetto \textit{SiFit} nasce dall'esigenza di riuscire a risolvere il problema di trovare un albero filogenetico che rappresenti dati provenienti da SCS\autoref{chap:intro-scs}, e sfrutta 
+Il progetto \textit{SiFit} affronta il problema presupponendo un modello a posizioni finite, quindi permettendo delle back-mutation\footnote{Mutazioni all'indietro, una mutazione viene persa durante la vita di una cellula}. Viene sfruttata una \textit{catena di Markov Monte Carlo} (\autoref{fig:art-sifit-markov}) per calcolare le prossime mosse da effettuare sull'albero e sul modello evolutivo. Vengono principalmente usati due tipi di mosse: mosse di \textit{prune and regraft} e mosse di \textit{swap}. Le mosse di \textit{prune and regraft} prevedono il cambiamento randomico della topologia dell'albero attraverso il riposizionamento di un sottoalbero all'interno (rSPR, \textit{random Subtree Prune and Regraft}) e la lunghezza dei rami dell'albero (eSPR, \textit{extending Subtree Pruning and Regrafting}). Le mosse di \textit{swap} prevedono lo scambio di nodi interni all'albero (stNNI, \textit{stochastic nearest-neighbour interchange}) e dei rami (rSTS, \textit{random Sub-Tree Swapping}).
 
-\subsection{L'algoritmo}
-\label{chap:art-sifit-algo}
-\textit{SiFit} sfrutta un approccio di tipo euristico per poter trovare un albero $\Tau = (T, t)$, dove $T$ è la topologia dell'albero e $t$ la lunghezza dei rami.
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[start chain = going right,-Triangle, every loop/.append style = {-Triangle}]
+        \foreach \i in {0,...,3} 
+          \node[state, on chain]  (\i) {\i};
+        \foreach \i in {0,...,2} {
+          \draw let \n1 = { int(\i+1) } in
+            (\i)  edge[bend left] (\n1)
+            (\n1) edge[bend left] (\i);
+        }
+        \foreach \i in {1,...,2}
+          \draw  (\i) edge[loop below] (\i);
+        \draw    (0)  edge[loop left]   (0);
+        \draw    (3)  edge[loop right]  (3);
+     \end{tikzpicture}
+     \caption{Esempio di catena di Markov}
+    \label{fig:art-sifit-markov}
+\end{figure}
 
 \section{SciTe}
 \label{chap:art-scite}

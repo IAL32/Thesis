@@ -30,8 +30,9 @@
 % Renderizzo solo quando necessario, se già renderizzato
 % viene incluso direttamente, velocizzando drasticamente
 % il tempo di compilazione
-\usetikzlibrary{external}
-\tikzexternalize % activate!
+\usetikzlibrary{external,calc,automata,chains,arrows.meta}
+\usepgfplotslibrary{external} 
+\tikzexternalize[prefix=tikzfigures/] % activate!
 % Algoritmi
 \usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 
