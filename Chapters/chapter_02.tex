@@ -13,21 +13,26 @@ In questo capitolo, analizzeremo le tecnologie già presenti che hanno affrontat
 \subsection{Modello degli errori single-cell}
 \label{chap:art-intro-model-matrix}
 I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nel \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà questo è un $1$:
-\begin{equation}
+\begin{align}
     \label{eq:art-intro-model-matrix}
-    P(M_{i,j} | D_{i,j}) = \begin{cases}
-        1 - \alpha  & \texttt{if } M_{i,j} = 0, D_{i,j} = 0 \\
-        \beta       & \texttt{if } M_{i,j} = 0, D_{i,j} = 1 \\
-        \alpha      & \texttt{if } M_{i,j} = 1, D_{i,j} = 0 \\
-        1 - \beta   & \texttt{if } M_{i,j} = 1, D_{i,j} = 1
-    \end{cases}
-\end{equation}
+    \begin{split}
+      P(M_{i,j} = 0 | D_{i,j} = 0) = 1 - \alpha, \qquad
+      &P(M_{i,j} = 0 | D_{i,j} = 1) = \beta, \\
+      P(M_{i,j} = 1 | D_{i,j} = 0) = \alpha, \qquad
+      &P(M_{i,j} = 1 | D_{i,j} = 1) = 1 - \beta
+    \end{split}
+\end{align}
+
 
 %%%%
 
-\section{SiFit: inferring tumor trees from single-cell sequencing data under finite-sites models}
+\section{SiFit: inferring tumor trees from single-cell sequencing data under finite-sites models \cite{sifit}}
 \label{chap:art-sifit}
-Il progetto \textit{SiFit} affronta il problema presupponendo un modello a posizioni finite, quindi permettendo delle back-mutation\footnote{Mutazioni all'indietro, una mutazione viene persa durante la vita di una cellula}. Viene sfruttata una \textit{catena di Markov Monte Carlo} (\autoref{fig:art-sifit-markov}) per calcolare le prossime mosse da effettuare sull'albero e sul modello evolutivo. Vengono principalmente usati due tipi di mosse: mosse di \textit{prune and regraft} e mosse di \textit{swap}. Le mosse di \textit{prune and regraft} prevedono il cambiamento randomico della topologia dell'albero attraverso il riposizionamento di un sottoalbero all'interno (rSPR, \textit{random Subtree Prune and Regraft}) e la lunghezza dei rami dell'albero (eSPR, \textit{extending Subtree Pruning and Regrafting}). Le mosse di \textit{swap} prevedono lo scambio di nodi interni all'albero (stNNI, \textit{stochastic nearest-neighbour interchange}) e dei rami (rSTS, \textit{random Sub-Tree Swapping}) \cite{sifit, efficiencymcmc}.
+Il progetto \textit{SiFit} affronta il problema presupponendo un modello a posizioni finite, quindi permettendo delle back-mutation\footnote{Mutazioni all'indietro, una mutazione viene persa durante la vita di una cellula}. Viene sfruttata una variante della \textit{catena di Markov Monte Carlo} (\autoref{fig:art-sifit-markov}) per calcolare le prossime mosse da effettuare sull'albero.
+Lo strumento accetta sia matrici binarie, con un set di valori possibili $\{ 0, 1, X \}$, che matrici ternarie, per le quali accetta il set di valori $\{ 0, 1, 2, X \}$, dove $0$ denota un genotipo \textit{reference} omozigota, $1$ e $2$ denotano un genotipo eterozigota ed omozigota \textit{non-reference}, rispettivamente, e $X$ denota la mancanza di informazioni.
+La presenza di più elementi nel set di valori possibili all'interno del modello di sostituzione prevede un modello di errori single-cell più complesso, al fine di tenere conto anche delle 
+
+Vengono principalmente usati due tipi di mosse: mosse di \textit{prune and regraft} e mosse di \textit{swap}. Le mosse di \textit{prune and regraft} prevedono il cambiamento randomico della topologia dell'albero attraverso il riposizionamento di un sottoalbero all'interno (rSPR, \textit{random Subtree Prune and Regraft}) e la lunghezza dei rami dell'albero (eSPR, \textit{extending Subtree Pruning and Regrafting}). Le mosse di \textit{swap} prevedono lo scambio di nodi interni all'albero (stNNI, \textit{stochastic nearest-neighbour interchange}) e dei rami (rSTS, \textit{random Sub-Tree Swapping}) \cite{sifit, efficiencymcmc}.
 
 \begin{figure}[h]
     \centering
@@ -48,8 +53,14 @@ Il progetto \textit{SiFit} affronta il problema presupponendo un modello a posiz
     \label{fig:art-sifit-markov}
 \end{figure}
 
-\section{SciTe}
+Il calcolo della likelihood ad ogni modifica del modello di evoluzione $\mathcal{M}_\lambda$. 
+
+\section{SciTe \cite{scite}}
 \label{chap:art-scite}
+SCITE (\textit{Single-Cell Inference of Tumor Evolution}), come gli altri strumenti presentati in questa sezione, è uno strumento che usa un approccio basato sulla likelihood dell'albero inferito per fare una ricerca stocastica dell'albero migliore rispetto ai dati in input. Ricordando l'assunzione che le mutazioni siano indipendenti l'una dall'altra, dati i tassi di errore $\theta = (\alpha, \beta)$ possiamo calcolare la likelihood come segue:
+\begin{equation}
+  P(M | T, \sigma, \theta) = \prod_{i = 1}^{n}\prod_{j = 1}^{m} P(M_{i,j} | D_{i,j})
+\end{equation}
 
 \section{SASC - Inferring Cancer Progression from Single-Cell Sequencing while Allowing Mutation Losses \cite{SCiccolellaSasc}}
 \label{chap:art-sasc}
