@@ -405,6 +405,7 @@ Una matrice di transizione $P_t^(k) = P_t \cdot P_{t + 1} \cdots P_{t + k - 1}$ 
         \vdots & \vdots & \ddots & \vdots \\
         \mathbb{P}(X_{t+k} = 1 \mid X_t = n) & \mathbb{P}(x_{t+k} = 2 \mid X_t = n) & \dots & \mathbb{P}(X_{t+k} = n \mid X_t = n)
         \end{pmatrix}.
+    \label{eq:intro-extra-markov-property}
 \end{equation}
 
 Nell'esempio in \autoref{fig:intro-markov-chain} la matrice di transizione a $k = 0$ è come segue:
@@ -420,7 +421,6 @@ Nell'esempio in \autoref{fig:intro-markov-chain} la matrice di transizione a $k 
 
 \subsubsection{Catena di Markov: Variante Monte Carlo (MCMC)}
 \label{chap:intro-extra-markov-mc}
-Il metodo \textit{Monte Carlo} è una tecnica utilizzata in statistica che si basa sul campionamento casuale per ottenere dei risultati. Un esempio del loro utilizzo è dato dal calcolo dell'area di un a funzione complessa: vengono generati $n$ punti casuali, e si calcola quanti di questi rientrano all'interno della funzione della quale vogliamo calcolare l'area. Il numero di questi punti che ricade in questa categoria ci fornisce un grado di approssimazione proporzionale al numero di punti che generiamo per ottenere il risultato finale: più punti generiamo, più è accurata la stima dell'area, o più in generale, di qualunque cosa stiamo cercando di approssimare.
+Il metodo \textit{Monte Carlo} in statistica si basa sul campionamento casuale per ottenere dei risultati. Un esempio del loro utilizzo è dato dal calcolo dell'area di una funzione complessa: vengono generati $n$ punti casuali, e si calcola quanti di questi rientrano all'interno della funzione della quale vogliamo calcolare l'area. Il numero di questi punti che ricade in questa categoria ci fornisce un grado di approssimazione proporzionale al numero di punti che generiamo per ottenere il risultato finale: più punti generiamo, più è accurata la stima dell'area, o più in generale, di qualunque cosa stiamo cercando di approssimare.
 
-Volendo ad esempio stimare una distribuzione a posteriori\footnote{Distribuzione di una variabile aleatoria condizionata a delle informazioni rilevanti su di essa} è possibile utilizzare una variante della Catena di Markov sfruttando le proprietà aleatorie del metodo Monte Carlo: la tecnica così ottenuta è definita una \textit{Monte Carlo Markov Chain} (MCMC).
-
+Volendo ad esempio stimare una distribuzione a posteriori\footnote{Distribuzione di una variabile aleatoria condizionata a delle informazioni rilevanti su di essa} è possibile utilizzare una variante della Catena di Markov sfruttando le proprietà aleatorie del metodo Monte Carlo: la tecnica così ottenuta è definita una \textit{Monte Carlo Markov Chain} (MCMC). Ogni valore generato è aleatorio, ma le scelte fatte per generare i valori successivi sono limitate dallo stato corrente e dalla distribuzione dei valori attuali. Una MCMC quindi può essere paragonata ad un cammino aleatorio\footnote{Modello matematico che descrive un processo stocastico come una successione di step aleatori all'interno di uno spazio matematico (e.g. $\mathbb{Z}$)} che con l'aumentare delle iterazioni converge alla distribuzione (o modello matematico) che si vuole stimare.
