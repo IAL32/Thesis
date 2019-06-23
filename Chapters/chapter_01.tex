@@ -342,3 +342,85 @@ Ad ogni iterazione, la posizione di ogni particella viene aggiornata per ogni di
     }
     \label{algo:particle-swarm-optimization}
 \end{algorithm}
+
+\section{Nozioni Extra}
+\label{chap:intro-extra}
+In questa sezione verranno introdotti dei concetti aggiuntivi che non rientrano nelle sezioni sopracitate, e le cui basi si assumono essere già presenti per la comprensione degli stessi. Queste nozioni verranno utilizzate nei capitoli successivi per complementare la spiegazione di modelli, termini o algoritmi.
+
+\subsection{Catena di Markov}
+\label{chap:intro-extra-markov}
+In teoria probabilistica, una \textit{Catena di Markov} è un modello stocastico che descrive una sequenza di possibili eventi la cui probabilità dei singoli eventi dipende solo ed unicamente dallo stato dell'evento che lo precede. Questa definizione si traduce nell'assunzione che gli stati passati e futuri di ogni evento sono indipendenti rispetto alla storia di tutti gli eventi già avvenuti all'interno della catena.
+
+Il modello è strutturato come una \textit{macchina a stati finiti}, dove i rami che collegano uno stato ad un altro hanno un valore numero associato, chiamato la \textit{probabilità di transizione}, che indica quanto è probabile passare allo stato di destinazione.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[start chain = going right,-Triangle, every loop/.append style = {-Triangle}]
+        \node[state, on chain]  (0) {A};
+        \node[state, on chain]  (1) {B};
+        \node[state, on chain]  (2) {C};
+        \node[state, on chain]  (3) {D};
+
+        \draw
+            (0) edge[bend left] node[above] {$0.3$} (1)
+            (1) edge[bend left] node[below] {$0.7$} (0)
+            (1) edge[bend left] node[above] {$0.2$} (2)
+            (2) edge[bend left] node[below] {$0.7$} (1)
+            (2) edge[bend left] node[above] {$0.2$} (3)
+            (3) edge[bend left] node[below] {$0.4$} (2)
+            ;
+
+        \foreach \i in {1,...,2}
+          \draw  (\i) edge[loop below] node[below] {$0.1$} (\i);
+
+        \draw   (0)  edge[loop left] node[left] {$0.7$} (0);
+        \draw   (3)  edge[loop right] node[right] {$0.6$} (3);
+     \end{tikzpicture}
+     \caption{Esempio di catena di Markov}
+    \label{fig:intro-markov-chain}
+\end{figure}
+
+Una catena di Markov può essere vista anche come una sequenza di variabili aleatorie $X_0, X_1, X_2, \dots$ che soddisfano la proprietà di indipendenza. Questa soddisfacibilità è definita come \textit{Proprietà di Markov}:
+
+\begin{equation}
+    P(X_n = i_n | X_{n - 1} = i_{n - 1}) = P(X_n = i_n | X_0 = i_0, X_1 = i_1, \dots, X_{n - 1} = i_{n - 1})
+    \label{eq:intro-markov-property}
+\end{equation}
+
+Le probabilità di transizione in un dato tempo $t$ per ogni stato della catena possono essere rappresentate come una matrice $P_t$, denominata \textit{matrice di transizione} e definita come segue:
+
+\begin{equation}
+    (P_t)_{i,j} = \mathbb{P} (X_{t + 1} = j | X_t = i)
+    \label{intro-extra-markov-matrix}
+\end{equation}
+
+Questo significa che ogni riga della matrice è un \textit{vettore di probabilità}, e la somma dei suoi elementi è sempre $1$. 
+
+Una matrice di transizione $P_t^(k) = P_t \cdot P_{t + 1} \cdots P_{t + k - 1}$ soddisfa quindi: 
+
+\begin{equation}
+    P_t^{(k)} = \begin{pmatrix}
+        \mathbb{P}(X_{t+k} = 1 \mid X_t = 1) & \mathbb{P}(X_{t+k} = 2 \mid X_t = 1) & \dots & \mathbb{P}(X_{t+k} = n \mid X_t = 1) \\
+        \mathbb{P}(X_{t+k} = 1 \mid X_t = 2) & \mathbb{P}(X_{t+k} = 2 \mid X_t = 2) & \dots & \mathbb{P}(X_{t+k} = n \mid X_t = 2) \\
+        \vdots & \vdots & \ddots & \vdots \\
+        \mathbb{P}(X_{t+k} = 1 \mid X_t = n) & \mathbb{P}(x_{t+k} = 2 \mid X_t = n) & \dots & \mathbb{P}(X_{t+k} = n \mid X_t = n)
+        \end{pmatrix}.
+\end{equation}
+
+Nell'esempio in \autoref{fig:intro-markov-chain} la matrice di transizione a $k = 0$ è come segue:
+\begin{equation}
+    P_t^0 = \begin{pmatrix}
+        0.7 & 0.3   & 0     & 0 \\
+        0.7 & 0.1   & 0.2   & 0 \\
+        0   & 0.7   & 0.1   & 0.2 \\
+        0   & 0     & 0.4   & 0.6
+    \end{pmatrix}
+    \label{eq:intro-markov-tranmat}
+\end{equation}
+
+\subsubsection{Catena di Markov: Variante Monte Carlo (MCMC)}
+\label{chap:intro-extra-markov-mc}
+Il metodo \textit{Monte Carlo} è una tecnica utilizzata in statistica che si basa sul campionamento casuale per ottenere dei risultati. Un esempio del loro utilizzo è dato dal calcolo dell'area di un a funzione complessa: vengono generati $n$ punti casuali, e si calcola quanti di questi rientrano all'interno della funzione della quale vogliamo calcolare l'area. Il numero di questi punti che ricade in questa categoria ci fornisce un grado di approssimazione proporzionale al numero di punti che generiamo per ottenere il risultato finale: più punti generiamo, più è accurata la stima dell'area, o più in generale, di qualunque cosa stiamo cercando di approssimare.
+
+Volendo ad esempio stimare una distribuzione a posteriori\footnote{Distribuzione di una variabile aleatoria condizionata a delle informazioni rilevanti su di essa} è possibile utilizzare una variante della Catena di Markov sfruttando le proprietà aleatorie del metodo Monte Carlo: la tecnica così ottenuta è definita una \textit{Monte Carlo Markov Chain} (MCMC).
+

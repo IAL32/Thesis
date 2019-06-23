@@ -2,4 +2,17 @@
 \label{chap:pso}
 In questo lavoro, verranno usate le premesse 
 
+\subsection{Modello degli errori single-cell}
+\label{chap:art-intro-model-matrix}
+I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nel \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà questo è un $1$:
+\begin{align}
+    \label{eq:art-intro-model-matrix}
+    \begin{split}
+      P(M_{i,j} = 0 | D_{i,j} = 0) = 1 - \alpha, \qquad
+      &P(M_{i,j} = 0 | D_{i,j} = 1) = \beta, \\
+      P(M_{i,j} = 1 | D_{i,j} = 0) = \alpha, \qquad
+      &P(M_{i,j} = 1 | D_{i,j} = 1) = 1 - \beta
+    \end{split}
+\end{align}
+
 \subsection{}
