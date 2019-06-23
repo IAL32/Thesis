@@ -424,3 +424,50 @@ Nell'esempio in \autoref{fig:intro-markov-chain} la matrice di transizione a $k 
 Il metodo \textit{Monte Carlo} in statistica si basa sul campionamento casuale per ottenere dei risultati. Un esempio del loro utilizzo è dato dal calcolo dell'area di una funzione complessa: vengono generati $n$ punti casuali, e si calcola quanti di questi rientrano all'interno della funzione della quale vogliamo calcolare l'area. Il numero di questi punti che ricade in questa categoria ci fornisce un grado di approssimazione proporzionale al numero di punti che generiamo per ottenere il risultato finale: più punti generiamo, più è accurata la stima dell'area, o più in generale, di qualunque cosa stiamo cercando di approssimare.
 
 Volendo ad esempio stimare una distribuzione a posteriori\footnote{Distribuzione di una variabile aleatoria condizionata a delle informazioni rilevanti su di essa} è possibile utilizzare una variante della Catena di Markov sfruttando le proprietà aleatorie del metodo Monte Carlo: la tecnica così ottenuta è definita una \textit{Monte Carlo Markov Chain} (MCMC). Ogni valore generato è aleatorio, ma le scelte fatte per generare i valori successivi sono limitate dallo stato corrente e dalla distribuzione dei valori attuali. Una MCMC quindi può essere paragonata ad un cammino aleatorio\footnote{Modello matematico che descrive un processo stocastico come una successione di step aleatori all'interno di uno spazio matematico (e.g. $\mathbb{Z}$)} che con l'aumentare delle iterazioni converge alla distribuzione (o modello matematico) che si vuole stimare.
+
+\subsection{Likelihood}
+\label{chap:intro-extra-lh}
+Uno dei problemi della genomica (ma anche di altri campi, come la linguistica \cite{phylogenylinguistical}) è quello di ricostruire un albero filogenetico partendo da dati raccolti di caratteri appartenenti una popolazione. I dati in questione seguono il modello di sostituzione (\autoref{chap:intro-models}) ed i tratti possono essere qualunque aspetto della popolazione, come altezza, peso, capacità di volare o di respirare sott'acqua. Nel presente lavoro, la popolazione presa in analisi sono cellule, ed i tratti considerati sono le mutazioni acquisite, ed il problema si può interpretare come la ricerca del migliore albero filogenetico che meglio rappresenta il modello di sostituzione. Per stabilire come un albero è \textit{migliore} di un altro, viene definita una funzione di \textit{likelihood}, che esprime appunto quanto è probabile un particolare set di parametri stastistici (nel nostro caso la configurazione dei nodi dell'albero inferito) data il modello di sostituzione iniziale. Supponendo di aver generato un albero $T$ con $n$ nodi, un nodo per ogni mutazione, e ad ogni foglia può essere associata una cellula. Le cellule così assegnate avranno una serie di caratteri, che vengono acquisiti o persi una volta per ogni nodo padre.
+
+\begin{figure}[!h]
+    \begin{subfigure}[b]{0.5 \textwidth}
+        \centering
+        \begin{tabular}{*{4}{c}}
+            a & b & c & d \\ \midrule \midrule
+            1 & 0 & 0 & 0 \\
+            0 & 1 & 0 & 0 \\
+            1 & 0 & 1 & 0 \\
+            1 & 0 & 1 & 1
+        \end{tabular}
+        \caption{Modello di sostituzione}
+        \label{fig:intro-extra-lh-tree-matrix}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.5 \textwidth}
+        \centering
+        \begin{tikzpicture}[sibling distance=10em,every node/.style = {shape=circle,draw, align=center}]
+            \node {Root}
+                    child { node {a} 
+                    child { node {c} 
+                    child { node {d}  } } }
+                    child { node {b}  };
+        \end{tikzpicture}
+        \caption{Esempio di albero inferito}
+        \label{fig:intro-extra-lh-tree-model}
+    \end{subfigure}
+    \caption{}
+    \label{fig:intro-extra-lh-tree}
+\end{figure}
+
+Il calcolo della likelihood $\mathcal{L}$ si basa sulla probabilità condizionata della configurazione attuale dell'albero $T$ dato il modello di sostituzione in input $M$, con $n$ righe (una per ogni cellula) e $m$ colonne (una per ogni mutazione), che si traduce in termini generali nella formula che segue:
+
+\begin{equation}
+    \mathcal{L}(T) = \mathcal{L}(1) \cdot \mathcal{L}(2) \cdots \mathcal{L}(n) = P(M | T) = \prod_{j = 1}^{m} P(M_j | T)
+    \label{eq:intro-extra-lh-formula}
+\end{equation}
+
+Spesso è utile riportare la somma logaritmica delle likelihood ad ogni posizione, poiché le probabilità condizionate di ogni nodo si traducono in numeri molto piccoli. La formula per il calcolo della \textit{logaritmic likelihood} si traduce quindi come segue:
+
+\begin{equation}
+    \ln \mathcal{L} = \ln \mathcal{L}(1) + \ln \mathcal{L}(2) + \ln \mathcal{L}(n) = \sum_{j = 1}^m \ln \mathcal{L}(j)
+    \label{eq:intro-extra-lh-log}
+\end{equation}

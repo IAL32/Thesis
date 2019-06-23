@@ -10,12 +10,11 @@
 Con l'avvento delle tecnologie per il sequenziamento del DNA partendo da singole cellule (SCS), iniziano ad essere disponibili dati di alta qualità. Queste tecnologie forniscono il sequenziamento di dati da singole cellule, permettendo quindi di ricostruire l'albero filogenetico di una cellula. È però da tenere in considerazione l'alto tasso di errore associato a questo tipo di dati, innalzando di conseguenza il grado di difficoltà del processo di ricostruzione della filogenesi. 
 In questo capitolo, verranno esaminate le tecnologie già presenti che hanno affrontato questa sfida, focalizzando l'analisi sul modello di ricerca dell'ottimo, del calcolo della \textit{likelihood} dell'albero inferito e della complessità dell'algoritmo utilizzato.
 
-
 %%%%
 
 \section{SiFit: inferring tumor trees from single-cell sequencing data under finite-sites models \cite{sifit}}
 \label{chap:art-sifit}
-Il progetto \textit{SiFit} affronta il problema presupponendo un modello a posizioni finite (\textit{finite sites model}), quindi permettendo delle back-mutation\footnote{Mutazioni all'indietro, una mutazione viene persa durante la vita di una cellula}. Viene sfruttata una variante della \textit{catena di Markov Monte Carlo}  per calcolare le prossime mosse da effettuare sull'albero.
+Il progetto \textit{SiFit} affronta il problema presupponendo un modello a posizioni finite (\textit{finite sites model}), quindi permettendo delle back-mutation\footnote{Mutazioni all'indietro, una mutazione viene persa durante la vita di una cellula}. Viene sfruttata una variante della catena di Markov Monte Carlo (\autoref{chap:intro-extra-markov-mc}) che usa le mosse e la likelihood ottenuta nello step precedente per inferire un albero delle mutazioni.
 Lo strumento accetta sia matrici binarie, con un set di valori possibili $\{ 0, 1, X \}$, che matrici ternarie, per le quali accetta il set di valori $\{ 0, 1, 2, X \}$, dove $0$ denota un genotipo \textit{reference} omozigota, $1$ e $2$ denotano un genotipo eterozigota ed omozigota \textit{non-reference}, rispettivamente, e $X$ denota la mancanza di informazioni.
 
 Vengono principalmente usati due tipi di mosse: mosse di \textit{prune and regraft} e mosse di \textit{swap}. Le mosse di \textit{prune and regraft} prevedono il cambiamento randomico della topologia dell'albero attraverso il riposizionamento di un sottoalbero all'interno (rSPR, \textit{random Subtree Prune and Regraft}) e la lunghezza dei rami dell'albero (eSPR, \textit{extending Subtree Pruning and Regrafting}). Le mosse di \textit{swap} prevedono lo scambio di nodi interni all'albero (stNNI, \textit{stochastic nearest-neighbour interchange}) e dei rami (rSTS, \textit{random Sub-Tree Swapping}) \cite{sifit, efficiencymcmc}.
