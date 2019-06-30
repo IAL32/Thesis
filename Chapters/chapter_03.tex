@@ -1,10 +1,98 @@
 \chapter{Inferenza di Alberi Tumorali tramite Particle Swarm Optimization}
 \label{chap:pso}
-In questo lavoro, verranno usate le premesse 
+In questa sezione verrà descritto lo strumento di inferenza di alberi tumorali tramite Particle Swarm Optimization (d'ora in poi \textbf{PSO}), le ipotesi effettuate, i risultati ottenuti ed eventuali conclusioni. Viene utilizzata la tecnica euristica Particle Swarm Optimization, descritta precedentemente nel \autoref{chap:intro-optim-pso}.
 
-\subsection{Modello degli errori single-cell}
-\label{chap:art-intro-model-matrix}
-I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nel \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà questo è un $1$:
+\section{Strumenti Utilizzati}
+Lo strumento è stato sviluppato in Python. Inizialmente si era cercato di utilizzare Cython\footnote{Un linguaggio di programmazione simile a Python, ma con il vantaggio di avere velocità simili a quelle ottenute da C}, poi abbandonato poiché lo studio di questo linguaggio di programmazione avrebbe ridotto il tempo utile alla vera e propria implementazione dello strumento. Si pensa però in futuro di riscrivere il codice utilizzando \textit{C++}.
+
+L'ambiente di sviluppo scelto è \textit{Visual Studio Code}, con l'ausilio delle estensioni di debugging per Python. In generale sono sempre stati utilizzati strumenti che seguono la filosofia \textit{Open Source}, di conseguenza questa tesi ed il codice sviluppato saranno entrambi disponibili liberamente sul profilo GitHub \cite{mygithub} del sottoscritto sotto licenza GPL3 e MIT rispettivamente.
+
+\section{Adattamento del problema a Particle Swarm Optimization}
+\label{chap:pso-adapt}
+Una delle principali sfide in questo progetto è stata di riuscire a trovare un'interpretazione valida ed efficacie adatta alla tecnica euristica scelta, appunto il Particle Swarm Optimization, il cui funzionamento ed algoritmo sono descritti dettagliatamente nella \autoref{chap:intro-optim-pso}. Possiamo quindi dividere l'implementazione in quattro fasi: \begin{enumerate}
+  \item Inizializzazione
+  \item Calcolo della velocità
+  \item Aggiornamento della particella
+  \item Aggiornamento della particella migliore dello swarm e della soluzione migliore della particella
+\end{enumerate}
+
+\subsection{Inizializzazione}
+\label{chap:pso-adapt-init}
+Possiamo considerare una particella dello swarm come un albero, la cui posizione è determinata dalla configurazione dei suoi nodi. L'inizializzazione viene effettuata randomizzando la topologia di un albero binario $T$ con $m$ nodi, uno per ogni mutazione, con una funzione randomica\footnote{In realtà la funzione è del tipo pseudo-randomica, utilizzando il generatore \textit{Mersenne Twister} \cite{Matsumoto:MersenneTwister}, ma non avendo problemi dal punto di vista della sicurezza o della riproducibilità, è stato pervenuto che per i nostri scopi è più che valido e sufficiente}. In questo modo, viene ottenuta una topologia simile a quella rappresentata nella \autoref{fig:pso-adapt-init-topology}. Il metodo di generazione dell'albero binario è ripreso da quello implementato su SASC, ed è descritto nell'\autoref{algo:pso-adapt-init}
+
+\begin{algorithm}[!h]
+    $m = $ numero di mutazioni
+    $r = $ radice dell'albero \\
+    $tree = [1, \dots, m]$ \Comment{Vettore con tutti i nodi dell'albero}
+    random.shuffle(tree) \Comment{Il vettore dei nodi viene randomizzato}
+    $nodes \gets [r]$ \\
+    $append_node \gets 0$ \\
+    \While{$i < m$}{
+      newNode $\gets$ new Node(name $=$ mutation\_name(m), parent $=$ nodes[append\_node], mutationid $=$ tree[i]) \\
+      nodes.append(newNode) \\
+      $i \gets i + 1$ \\
+      \If{$i < m$}{
+        newNode $\gets$ new Node(name = mutation\_name(m), parent = nodes[append\_node], mutationid = tree[i]) \\
+        nodes.append(newNode)
+      }
+      append\_node $\gets$ append\_node $+ 1$
+      $i \gets i + 1$
+    }
+    \Return{r}
+    \label{algo:pso-adapt-init}
+    \caption{RandomTreeInit}
+\end{algorithm}
+
+\begin{figure}[h]
+  \centering
+  \begin{forest}
+      for tree = {shape=circle,draw}
+      [{germline}
+      [{6} 
+      [{18} 
+      [{28} 
+      [{11}  ]
+      [{8}  ] ]
+      [{24} 
+      [{21}  ]
+      [{14}  ] ] ]
+      [{10} 
+      [{30} 
+      [{9}  ]
+      [{17}  ] ]
+      [{29} 
+      [{1}  ]
+      [{3}  ] ] ] ]
+      [{23} 
+      [{27} 
+      [{20} 
+      [{19}  ]
+      [{16}  ] ]
+      [{15} 
+      [{12}  ]
+      [{13}  ] ] ]
+      [{2} 
+      [{26} 
+      [{7}  ]
+      [{22}  ] ]
+      [{4} 
+      [{25}  ]
+      [{5}  ] ] ] ]]
+    \end{forest}    
+  \caption{Esempio di topologia iniziale con $m = 30$}
+  \label{fig:pso-adapt-init-topology}
+\end{figure}
+
+\subsection{Calcolo della velocità}
+\label{chap:pso-adapt-calculate}
+La seconda fase è il calcolo della velocità con la quale una particella si muove rispetto a $p_i$ e $g$, cioè l'albero migliore che ha avuto la particella fino ad ora, e l'albero migliore in tutto lo swarm. Come parametro di paragone è definita la likelihood logaritmica descritta nell'\autoref{eq:art-sasc-lh}.
+
+Questo step è stato il principale problema già dall'inizio.
+
+
+\section{Modello degli errori single-cell}
+\label{chap:pso-matrix}
+I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nella \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà questo è un $1$:
 \begin{align}
     \label{eq:art-intro-model-matrix}
     \begin{split}
@@ -15,4 +103,3 @@ I dati single-cell vengono rappresentati tramite un modello di sostituzione come
     \end{split}
 \end{align}
 
-\subsection{}
