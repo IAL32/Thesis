@@ -14,7 +14,7 @@ In questo capitolo, verranno esaminate le tecnologie già presenti che hanno aff
 
 \section{SciTe \cite{scite}}
 \label{chap:art-scite}
-SCITE (\textit{Single-Cell Inference of Tumor Evolution}) usa un approccio basato sulla likelihood dell'albero inferito per fare una ricerca stocastica dell'albero migliore rispetto ai dati in input. Ricordando l'assunzione che le mutazioni siano indipendenti l'una dall'altra, dati i tassi di errore $\theta = (\alpha, \beta)$ possiamo calcolare la likelihood come segue:
+SCITE (\textit{Single-Cell Inference of Tumor Evolution}) usa un approccio basato sulla likelihood dell'albero inferito per fare una ricerca stocastica dell'albero migliore rispetto ai dati in input. Ricordando l'assunzione che le mutazioni siano indipendenti l'una dall'altra, dati i tassi di errore $\theta = (\alpha, \beta)$, la matrice $M$ di partenza di dimensioni $n \times m$, dove $n$ è il numero di cellule e $m$ il numero di mutazioni, possiamo calcolare la likelihood come segue:
 \begin{equation}
   P(M | T, \sigma, \theta) = \prod_{i = 1}^{n}\prod_{j = 1}^{m} P(M_{i,j} | D_{i,j})
 \end{equation}
