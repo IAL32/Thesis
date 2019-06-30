@@ -276,6 +276,9 @@ TSWLatexianTemp*
 *-figure[0-9].pdf
 *-figure[0-9][0-9].pdf
 *-figure[0-9][0-9][0-9].pdf
-.gnuplot
+*.gnuplot
 XDG_CACHE_HOME/
 tikzfigures/
+*.tmp
+*.for
+*.copy
