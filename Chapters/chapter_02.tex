@@ -54,4 +54,15 @@ In SASC (\textit{Simulated Annealing Single-Cell} inference) viene utilizzato il
   \label{fig:art-sasc-bm}
 \end{figure}
 
-Ad ogni riduzione della temperatura viene cercato un albero topologicamente vicino a quello attuale applicando una delle quattro operazioni precedenti, finché non si raggiunge la temperatura minima. La bontà dell'albero è definita dalla \textit{likelihood logaritmica}, e viene calcolata ad ogni operazione effettuata sull'albero inferito.
+Ad ogni riduzione della temperatura viene cercato un albero topologicamente vicino a quello attuale applicando una delle quattro operazioni precedenti, finché non si raggiunge la temperatura minima. La bontà dell'albero è definita dalla \textit{likelihood logaritmica}, e viene calcolata ad ogni operazione effettuata sull'albero inferito nella seguente maniera:
+
+\begin{equation}
+  \label{eq:art-sasc-lh}
+  max \sum_i^n \sum_j^m \log ( P( M_{i,j} | D_{i,j} ) )
+\end{equation}
+
+\subsection{Complessità}
+L'algoritmo Simulated Annealing impiega $O(\log t)$ step fino a quando non raggiunge la temperatura minima, con $t$ ad indicare la temperatura di partenza, e per ogni step impiega $O(n m)$ per calcolare la likelihood logaritmica. In generale, SASC ha una complessità di $O(nm \log t)$.
+% TODO: check complexity calculation for SASC
+
+  
