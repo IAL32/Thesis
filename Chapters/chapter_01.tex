@@ -445,13 +445,13 @@ Uno dei problemi della genomica (ma anche di altri campi, come la linguistica \c
     \end{subfigure}
     \begin{subfigure}[b]{0.5 \textwidth}
         \centering
-        \begin{tikzpicture}[sibling distance=5em,every node/.style = {shape=circle,draw, align=center}]
-            \node {Root}
-                    child { node {a} 
-                    child { node {c} 
-                    child { node {d}  } } }
-                    child { node {b}  };
-        \end{tikzpicture}
+        \begin{forest}
+            for tree = {grow'=0,draw}, forked edges
+            [root,
+                [a, [c, [d]] ]
+                [b]
+            ]
+        \end{forest}
         \caption{Esempio di albero inferito}
         \label{fig:intro-extra-lh-tree-model}
     \end{subfigure}
@@ -472,3 +472,24 @@ Spesso è utile riportare la somma logaritmica delle likelihood ad ogni posizion
     \ln \mathcal{L} = \ln \mathcal{L}(1) + \ln \mathcal{L}(2) + \ln \mathcal{L}(n) = \sum_{j = 1}^m \ln \mathcal{L}(j)
     \label{eq:intro-extra-lh-log}
 \end{equation}
+
+\subsection{Matching}
+Nella teoria dei grafi un \textit{matching} $M$ è definito come un sottoinsieme di coppie di nodi di un grafo $G = (V, E, w)$ tale per cui ogni coppia non è adiacente ad un altra, e nessuna coppia è un loop; ciò significa che nessuna coppia condivide un nodo.
+
+\begin{figure}[h]
+    \centering
+    \begin{forest}
+        for tree = {grow'=0,draw}, forked edges
+        [,
+            [, edge=red]
+            [, [, [, [, [, ]]]]]
+            [, [, edge=red [, ]]]
+            [, [, [, edge=red]]]
+        ]
+    \end{forest}
+    \caption{Esempio di matching}
+    \label{fig:intro-extra-matching}
+\end{figure}
+
+\subsubsection{Maximum Weight Matching}
+Dato un matching $M$ 

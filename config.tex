@@ -7,7 +7,9 @@
 \SetAlgorithmName{Algoritmo}{Algoritmo}
 
 \newcommand{\M}[1]{$\mathrm{#1}$}
+\newcommand{\pyref}[1]{\href{https://docs.python.org/3/library/#1.html}{#1}}
 \newcommand\Tau{\mathcal{T}}
+\newcommand{\pypi}[1]{\href{https://pypi.org/project/#1}{#1}}
 
 % Adenina
 \def \adenina{
@@ -45,3 +47,19 @@
 \newcommand{\mcrot}[4]{\multicolumn{#1}{#2}{\rlap{\rotatebox{#3}{#4}~}}} 
 
 \SetKwComment{Comment}{$\triangleright$\ }{}
+
+% refer to "forest" package for forked edges
+\forestset{
+	declare dimen={fork sep}{0.5em},
+	forked edge'/.style={
+		edge={rotate/.option=!parent.grow},
+		edge path'={(!u.parent anchor) -- ++(\forestoption{fork sep},0) |- (.child anchor)},
+	},
+	forked edge/.style={
+		on invalid={fake}{!parent.parent anchor=children},
+		child anchor=parent,
+		forked edge',
+	},
+	forked edges/.style={for nodewalk={#1}{forked edge}},
+	forked edges/.default=tree,
+}

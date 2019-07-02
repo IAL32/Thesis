@@ -42,14 +42,14 @@ In SASC (\textit{Simulated Annealing Single-Cell} inference) viene utilizzato il
 \begin{figure}[h]
   \centering
   \begin{forest}
-      for tree={shape=circle,draw}
-      [{germline} 
-      [{a} 
-      [{c} 
-      [{d} ]]
-      [{e}
-      [{a-},color=red ]]]
-      [{b} ]]
+    for tree = {grow'=0,draw}, forked edges
+    [{germline} 
+    [{a} 
+    [{c} 
+    [{d} ]]
+    [{e}
+    [{a-},color=red ]]]
+    [{b} ]]
   \end{forest}
   \caption{Esempio di back-mutation}
   \label{fig:art-sasc-bm}
