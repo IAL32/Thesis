@@ -21,9 +21,13 @@ I moduli e le librerie Python che sono state utilizzate sono elencate di seguito
 
 \small * Moduli esterni
 
+\subsection{Dati utilizzati}
+Per poter testare l'algoritmo ed il codice sviluppato su di esso è essenziale avere dei dati sia veri che simulati. A questo proposito sono stati utilizzati i dati simulati dal laboratorio di appartenenza del progetto, AlgoLab. Nelle seguenti sezioni verranno analizzati i dati relativi al file simulato presente nella directory del progetto \texttt{data/simulatex/exp1/sim1\_scs.txt}.
+% TODO: spiegare perché è utile avere sia dati veri che simulati
+
 \section{Adattamento del problema a Particle Swarm Optimization}
 \label{chap:pso-adapt}
-Una delle principali sfide in questo progetto è stata di riuscire a trovare un'interpretazione valida ed efficacie adatta alla tecnica euristica scelta, appunto il Particle Swarm Optimization, il cui funzionamento ed algoritmo sono descritti dettagliatamente nella \autoref{chap:intro-optim-pso}. Possiamo quindi dividere l'implementazione in quattro fasi: \begin{enumerate}
+Una delle principali sfide in questo progetto è stata di riuscire a trovare un'interpretazione valida ed efficacie adatta alla tecnica euristica scelta, appunto il Particle Swarm Optimization, il cui funzionamento ed algoritmo sono descritti dettagliatamente nella \autoref{chap:intro-optim-pso}. Il modello più immediato da adattare al problema è quello di associare una particella dello swarm ad un albero sul quale vengono effettuate delle operazioni. Queste operazioni saranno ciò che determina il ``movimento'' della particella nello spazio. Lo swarm non è quindi altro che l'insieme degli alberi. Possiamo dividere l'implementazione in quattro fasi: \begin{enumerate}
   \item Inizializzazione
   \item Calcolo del movimento della particella
   \item Aggiornamento della particella
@@ -57,7 +61,7 @@ Possiamo considerare una particella dello swarm come un albero, la cui posizione
     \label{algo:pso-adapt-init}
 \end{algorithm}
 
-\begin{figure}[h]
+\begin{figure}[!h]
   \centering
   \begin{forest}
       germline
@@ -97,7 +101,6 @@ Possiamo considerare una particella dello swarm come un albero, la cui posizione
   \label{fig:pso-adapt-init-topology}
 \end{figure}
 
-
 \subsection{Calcolo del movimento della particella}
 \label{chap:pso-adapt-calculate}
 La seconda fase è il calcolo della velocità con la quale una particella si muove rispetto a $p_i$ e $g$, cioè l'albero migliore che ha avuto la particella fino ad ora, e l'albero migliore in tutto lo swarm. Come parametro di paragone è definita la likelihood logaritmica descritta nell'\autoref{eq:art-sasc-lh}.
@@ -106,9 +109,32 @@ Questo step è stato uno dei problemi principali da affrontare sin dal principio
 
 \subsubsection{Assenza del parametro di velocità}
 \label{chap:pso-adapt-calculate-1}
-Nei momenti iniziali di questo progetto, come è stato descritto precedentemente, trovare una corrispondenza congeniale ed adeguata all'idea di \textit{velocità} del PSO è stato impegnativo. Al fine comunque di poter dare un via al lavoro, una delle prime metriche adottate di velocità è stata la vera e propria assenza di tale metrica. I risultati descritti nella \autoref{fig:} possono sembrare promettenti, dato che comunque provano la funzionalità del programma, e che la likelihood aumenta. Quello che i dati non ci dicono è però qualcosa che possiamo intuire dall'intrinseco comportamento dell'assenza della velocità come metrica: siamo di fronte ad un semplice algoritmo di highest hill climbing, descritto nella \autoref{chap:intro-optim-hill}. Quello che succede quindi è che si cerca di migliorare l'algoritmo al primo miglioramento individuato, in questo caso corrisponde ad ogni volta che si trova una likelihood migliore. Questo può sembrare un ottimo risultato, ma è in realtà un problema. L'estrema e ripida scalata rischia di incastrare la ricerca in un ottimo locale, peggiorando considerevolmente le possibilità di trovare un albero filogenetico di \textbf{buona qualità}. È importante sottolineare la \textit{bontà} del risultato, e non il basso valore della \textit{likelihood}, in quanto questo è solo un valore indicativo della verosomiglianza dell'albero con i dati a nostra disposizione, ma non dell'effettiva qualità della loro rappresentazione. È molto meglio quindi cercare di trovare un albero filogenetico con una qualità migliore che quello con la likelihood più elevata.
+Nei momenti iniziali di questo progetto, come è stato descritto precedentemente, trovare una corrispondenza congeniale ed adeguata all'idea di \textit{velocità} del PSO è stato impegnativo. Al fine comunque di poter dare un via al lavoro, una delle prime metriche adottate di velocità è stata la vera e propria assenza di tale metrica. I risultati descritti nella \autoref{fig:pso-adapt-calculate-1-table} possono sembrare promettenti, dato che comunque provano la funzionalità del programma, e che la likelihood aumenta. Quello che i dati non ci dicono è però qualcosa che possiamo intuire dall'intrinseco comportamento dell'assenza della velocità come metrica: siamo di fronte ad un semplice algoritmo di highest hill climbing, descritto nella \autoref{chap:intro-optim-hill}. Quello che succede quindi è che si cerca di migliorare l'algoritmo al primo miglioramento individuato, in questo caso corrisponde ad ogni volta che si trova una likelihood migliore. Questo può sembrare un ottimo risultato, ma è in realtà un problema. L'estrema e ripida scalata rischia di incastrare la ricerca in un ottimo locale, peggiorando considerevolmente le possibilità di trovare un albero filogenetico di \textbf{buona qualità}. È importante sottolineare la \textit{bontà} del risultato, e non il basso valore della \textit{likelihood}, in quanto questo è solo un valore indicativo della verosomiglianza dell'albero con i dati a nostra disposizione, ma non dell'effettiva qualità della loro rappresentazione. È molto meglio quindi cercare di trovare un albero filogenetico con una qualità migliore che quello con la likelihood più elevata.
 
-\subsubsection{}
+\begin{figure}[!h]
+  \centering
+  \begin{tabular}{*{5}{c}}
+    Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & Tempo Impiegato (s) \\ \midrule \midrule
+    5 & 20 & -8865.285307 & -8029.856799 & 19.102292 \\
+    10 & 20 & -8865.285307 & -8002.707585 & 33.599134 \\
+    50 & 20 & -8341.992690 & -6296.678757 & 179.630704 \\
+    85 & 20 & -8341.992690 & -6804.514080 & 296.845929 \\
+    100 & 20 & -8341.992690 & -6260.733733 & 351.863327 \\
+    150 & 20 & -8163.910048 & -6341.065027 & 536.725522 \\
+    200 & 20 & -7944.950318 & -6897.161794 & 737.740094
+  \end{tabular}
+  \caption{Risultati ottenuti con assenza della velocità}
+  \label{fig:pso-adapt-calculate-1-table}
+\end{figure}
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8 \textwidth]{322_lh_no_velocity.pdf}
+  \caption{Grafico della likelihood sui vari parametri delle particelle con l'assenza della velocità}
+  \label{fig:pso-adapt-calculate-1-graph}
+\end{figure}
+
+\subsubsection{Velocità come numero di nodi presi dall'albero migliore}
+% TODO:
 
 \section{Modello degli errori single-cell}
 \label{chap:pso-matrix}
