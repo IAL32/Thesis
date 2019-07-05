@@ -111,19 +111,37 @@ Questo step è stato uno dei problemi principali da affrontare sin dal principio
 \label{chap:pso-adapt-calculate-1}
 Nei momenti iniziali di questo progetto, come è stato descritto precedentemente, trovare una corrispondenza congeniale ed adeguata all'idea di \textit{velocità} del PSO è stato impegnativo. Al fine comunque di poter dare un via al lavoro, una delle prime metriche adottate di velocità è stata la vera e propria assenza di tale metrica. I risultati descritti nella \autoref{fig:pso-adapt-calculate-1-table} possono sembrare promettenti, dato che comunque provano la funzionalità del programma, e che la likelihood aumenta. Quello che i dati non ci dicono è però qualcosa che possiamo intuire dall'intrinseco comportamento dell'assenza della velocità come metrica: siamo di fronte ad un semplice algoritmo di highest hill climbing, descritto nella \autoref{chap:intro-optim-hill}. Quello che succede quindi è che si cerca di migliorare l'algoritmo al primo miglioramento individuato, in questo caso corrisponde ad ogni volta che si trova una likelihood migliore. Questo può sembrare un ottimo risultato, ma è in realtà un problema. L'estrema e ripida scalata rischia di incastrare la ricerca in un ottimo locale, peggiorando considerevolmente le possibilità di trovare un albero filogenetico di \textbf{buona qualità}. È importante sottolineare la \textit{bontà} del risultato, e non il basso valore della \textit{likelihood}, in quanto questo è solo un valore indicativo della verosomiglianza dell'albero con i dati a nostra disposizione, ma non dell'effettiva qualità della loro rappresentazione. È molto meglio quindi cercare di trovare un albero filogenetico con una qualità migliore che quello con la likelihood più elevata.
 
+L'algoritmo risultante per il calcolo della posizione della particella risulta quindi essere il seguente:
+
+\begin{algorithm}[!h]
+    $r \gets random()$ \\
+    \If{$r < .33$}{
+      $tree \gets p_i$
+    }
+    \ElseIf{$r < .66$}{
+      $tree \gets g$
+    }
+    \Else{
+      $tree \gets x_i$
+    }
+    $execute\_random\_operation(tree)$
+    \caption{ParticleIteration}
+    \label{algo:pso-adapt-calculate-1}
+\end{algorithm}
+
 \begin{figure}[!h]
   \centering
   \begin{tabular}{*{5}{c}}
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
-    & & & & \\
-    & & & & \\
-    & & & & \\
-    & & & & \\
-    & & & & \\
-    & & & & \\
-    & & & &
+    5 & 20 & -8865.285307 & -5807.871680 & 8.622138 \\
+    10 & 20 & -8865.285307 & -3096.036336 & 17.478406 \\
+    100 & 20 & -8341.992690 & -1650.249232 & 193.255694 \\
+    50 & 20 & -8341.992690 & -2258.473502 & 88.392956 \\
+    85 & 20 & -8341.992690 & -1681.115794 & 153.431512 \\
+    150 & 20 & -8163.910048 & -1199.301909 & 275.721155 \\
+    200 & 20 & -7944.950318 & -1173.538980 & 370.858453
   \end{tabular}
-  \caption{Risultati ottenuti con assenza della velocità}
+  \caption{Risultati ottenuti con assenza della velocità usando i parametri: $\alpha = 0.25, \beta = 1*10^{-5}, k = 3, seed = 1$}
   \label{fig:pso-adapt-calculate-1-table}
 \end{figure}
 
