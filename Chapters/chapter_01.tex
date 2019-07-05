@@ -187,7 +187,7 @@ In matematica, \textit{hill climbing} è un algoritmo di ricerca dell'ottimo, mi
     \label{algo:hill-climbing}
 \end{algorithm}
 \vspace{4ex}
-Esistono numerose variazioni di questo algoritmo, ma le più conosciute sono \textit{simple hill climbing}, \textit{steepest hill climbing} e \textit{stocasting hill climbing}, applicate a seconda delle proprietà del problema in questione. Un esempio di funzione da ottimizzare, in questo caso massimizzare, può essere come quella rappresentata in \autoref{fig:intro-optim-hill-paraboloid}, dove esiste un solo ottimo locale ($f(x, y) = 0$) cioè la funzione è monomodale\footnote{Una funzione monomodale è una funzione con un solo ottimo locale, che corrisponde anche all'ottimo globale della funzione stessa}. In questo caso, il \textit{simple hill climbing} e lo \textit{steepest hill climbing} ottengono sempre il risultato migliore.
+Esistono numerose variazioni di questo algoritmo, ma le più conosciute sono \textit{simple hill climbing}, \textit{steepest hill climbing} e \textit{stocastic hill climbing}, applicate a seconda delle proprietà del problema in questione. Un esempio di funzione da ottimizzare, in questo caso massimizzare, può essere come quella rappresentata in \autoref{fig:intro-optim-hill-paraboloid}, dove esiste un solo ottimo locale ($f(x, y) = 0$) cioè la funzione è monomodale\footnote{Una funzione monomodale è una funzione con un solo ottimo locale, che corrisponde anche all'ottimo globale della funzione stessa}. In questo caso, il \textit{simple hill climbing} e lo \textit{steepest hill climbing} ottengono sempre il risultato migliore.
 
 \begin{figure}[!h]
     \begin{subfigure}[b]{0.5 \textwidth}
@@ -446,7 +446,7 @@ Uno dei problemi della genomica (ma anche di altri campi, come la linguistica \c
     \begin{subfigure}[b]{0.5 \textwidth}
         \centering
         \begin{forest}
-            for tree = {grow'=0,draw}, forked edges
+            germline
             [root,
                 [a, [c, [d]] ]
                 [b]
@@ -474,22 +474,39 @@ Spesso è utile riportare la somma logaritmica delle likelihood ad ogni posizion
 \end{equation}
 
 \subsection{Matching}
-Nella teoria dei grafi un \textit{matching} $M$ è definito come un sottoinsieme di coppie di nodi di un grafo $G = (V, E, w)$ tale per cui ogni coppia non è adiacente ad un altra, e nessuna coppia è un loop; ciò significa che nessuna coppia condivide un nodo.
+Nella teoria dei grafi un \textit{matching} $M$ è definito come un sottoinsieme di coppie di nodi di un grafo $G = (V, E)$ tale per cui ogni coppia non è adiacente ad un altra, e nessuna coppia è un loop; ciò significa che nessuna coppia condivide un nodo.
 
 \begin{figure}[h]
     \centering
-    \begin{forest}
-        for tree = {grow'=0,draw}, forked edges
-        [,
-            [, edge=red]
-            [, [, [, [, [, ]]]]]
-            [, [, edge=red [, ]]]
-            [, [, [, edge=red]]]
-        ]
-    \end{forest}
+    \begin{tikzpicture}
+        \begin{scope}[every node/.style={circle,draw}]
+            \node (A) at (0, 0) {};
+            \node (B) at (2, 1) {};
+            \node (C) at (2, -1) {};
+            \node (D) at (4, 1) {};
+            \node (E) at (6, 1) {};
+            \node (F) at (4, -1) {};
+            \path [-] (A) edge (B);
+            \path [-] (A) edge [red, thick] (C);
+            \path [-] (B) edge (C);
+            \path [-] (B) edge (D);
+            \path [-] (C) edge (F);
+            \path [-] (A) edge (B);
+            \path [-] (D) edge [red, thick] (F);
+            \path [-] (D) edge (E);
+        \end{scope}
+    \end{tikzpicture}
     \caption{Esempio di matching}
     \label{fig:intro-extra-matching}
 \end{figure}
 
 \subsubsection{Maximum Weight Matching}
-Dato un matching $M$ 
+\label{chap:intro-extra-matching-maxw}
+Dato un grafo pesato $G = (V, E, w)$, con $w: E \rightarrow \mathbb{R}$, il \textit{maximum weight matching} è un matching per cui la somma:
+
+\begin{equation}
+    \label{eq:intro-extra-matching-maxw}
+    \sum_e^{E} w(e)
+\end{equation}
+
+È massima. 
