@@ -17,12 +17,9 @@ I moduli e le librerie Python che sono state utilizzate sono elencate di seguito
   \item * \pypi{graphviz} -- modulo esterno per la visualizzazione ed il salvataggio su file dei grafi da formato graphviz\footnote{Strumento che permette di disegnare rappresentare dei grafi utilizzando la notazione DOT, un linguaggio che descrive la struttura di grafi generici}
   \item * \pypi{ete3} -- modulo esterno utilizzato come base di appoggio per le funzioni essenziali relative ai nodi di un albero, come la ricerca dei nodi e l'aggiunta o rimozione di essi
   \item * \pypi{networkx} -- modulo esterno sfruttato per il calcolo del \textit{maximum weight matching}
-  \item * \pypi{matplotlib} -- 
 \end{itemize}
 
 \small * Moduli esterni
-
-\footnotetext{ASD}
 
 \section{Adattamento del problema a Particle Swarm Optimization}
 \label{chap:pso-adapt}
@@ -35,7 +32,7 @@ Una delle principali sfide in questo progetto è stata di riuscire a trovare un'
 
 \subsection{Inizializzazione}
 \label{chap:pso-adapt-init}
-Possiamo considerare una particella dello swarm come un albero, la cui posizione è determinata dalla configurazione dei suoi nodi. L'inizializzazione viene effettuata randomizzando la topologia di un albero binario $T$ con $m$ nodi, uno per ogni mutazione, con una funzione randomica\footnote{In realtà la funzione è del tipo pseudo-randomica, utilizzando il generatore \textit{Mersenne Twister} \cite{Matsumoto:MersenneTwister}, ma non avendo problemi dal punto di vista della sicurezza o della riproducibilità, è stato pervenuto che per i nostri scopi è più che valido e sufficiente}. In questo modo, viene ottenuta una topologia simile a quella rappresentata nella \autoref{fig:pso-adapt-init-topology}. Il metodo di generazione dell'albero binario è ripreso da quello implementato su SASC, ed è descritto nell'\autoref{algo:pso-adapt-init}
+Possiamo considerare una particella dello swarm come un albero, la cui posizione è determinata dalla configurazione dei suoi nodi. L'inizializzazione viene effettuata randomizzando la topologia di un albero binario $T$ con $m$ nodi, uno per ogni mutazione, con una funzione randomica\footnote{In realtà la funzione è del tipo pseudo-randomica, utilizzando il generatore \textit{Mersenne Twister} \cite{Matsumoto:MersenneTwister}, ma non avendo problemi dal punto di vista della sicurezza o della riproducibilità, è stato pervenuto che per i nostri scopi è più che valido e sufficiente}. In questo modo, viene ottenuta una topologia simile a quella rappresentata nella \autoref{fig:pso-adapt-init-topology}. Il metodo di generazione dell'albero binario è ripreso da quello implementato su SASC, ed è descritto nell'\autoref{algo:pso-adapt-init}.
 
 \begin{algorithm}[!h]
     $m = $ numero di mutazioni
@@ -56,14 +53,14 @@ Possiamo considerare una particella dello swarm come un albero, la cui posizione
       $i \gets i + 1$
     }
     \Return{r}
-    \label{algo:pso-adapt-init}
     \caption{RandomTreeInit}
+    \label{algo:pso-adapt-init}
 \end{algorithm}
 
 \begin{figure}[h]
   \centering
   \begin{forest}
-      for tree = {grow'=0,draw}, forked edges
+      germline
       [{germline}
       [{6} 
       [{18} 
@@ -105,13 +102,19 @@ Possiamo considerare una particella dello swarm come un albero, la cui posizione
 \label{chap:pso-adapt-calculate}
 La seconda fase è il calcolo della velocità con la quale una particella si muove rispetto a $p_i$ e $g$, cioè l'albero migliore che ha avuto la particella fino ad ora, e l'albero migliore in tutto lo swarm. Come parametro di paragone è definita la likelihood logaritmica descritta nell'\autoref{eq:art-sasc-lh}.
 
-Questo step è stato uno dei problemi principali da affrontare sin dal principio del progetto. Non è immediata, data la natura non lineare del problema, trovare un modo diretto che rappresenti la velocità e la direzione di una particella verso gli alberi migliori $p_i$ e $g$. 
+Questo step è stato uno dei problemi principali da affrontare sin dal principio del progetto. Non è immediato trovare un modello diretto che rappresenti la velocità e la direzione di una particella verso gli alberi migliori $p_i$ e $g$, data la natura non lineare del problema. Sono state, dunque, introdotte diverse metriche (o assenza di tali) per cercare di definire al meglio questo parametro in maniera tale che aderisse al meglio all'algoritmo scelto, quindi PSO. Nelle seguenti sottosezioni verranno descritti tali esperimenti, con risultati e considerazioni del caso.
+
+\subsubsection{Assenza del parametro di velocità}
+\label{chap:pso-adapt-calculate-1}
+Nei momenti iniziali di questo progetto, come è stato descritto precedentemente, trovare una corrispondenza congeniale ed adeguata all'idea di \textit{velocità} del PSO è stato impegnativo. Al fine comunque di poter dare un via al lavoro, una delle prime metriche adottate di velocità è stata la vera e propria assenza di tale metrica. I risultati descritti nella \autoref{fig:} possono sembrare promettenti, dato che comunque provano la funzionalità del programma, e che la likelihood aumenta. Quello che i dati non ci dicono è però qualcosa che possiamo intuire dall'intrinseco comportamento dell'assenza della velocità come metrica: siamo di fronte ad un semplice algoritmo di highest hill climbing, descritto nella \autoref{chap:intro-optim-hill}. Quello che succede quindi è che si cerca di migliorare l'algoritmo al primo miglioramento individuato, in questo caso corrisponde ad ogni volta che si trova una likelihood migliore. Questo può sembrare un ottimo risultato, ma è in realtà un problema. L'estrema e ripida scalata rischia di incastrare la ricerca in un ottimo locale, peggiorando considerevolmente le possibilità di trovare un albero filogenetico di \textbf{buona qualità}. È importante sottolineare la \textit{bontà} del risultato, e non il basso valore della \textit{likelihood}, in quanto questo è solo un valore indicativo della verosomiglianza dell'albero con i dati a nostra disposizione, ma non dell'effettiva qualità della loro rappresentazione. È molto meglio quindi cercare di trovare un albero filogenetico con una qualità migliore che quello con la likelihood più elevata.
+
+\subsubsection{}
 
 \section{Modello degli errori single-cell}
 \label{chap:pso-matrix}
-I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nella \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà questo è un $1$:
+I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nella \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà è un $1$:
 \begin{align}
-    \label{eq:art-intro-model-matrix}
+    \label{eq:pso-intro-model-matrix}
     \begin{split}
       P(M_{i,j} = 0 | D_{i,j} = 0) = 1 - \alpha, \qquad
       &P(M_{i,j} = 0 | D_{i,j} = 1) = \beta, \\
@@ -121,8 +124,13 @@ I dati single-cell vengono rappresentati tramite un modello di sostituzione come
 \end{align}
 
 \section{Considerazioni aggiuntive}
+Al fine di poter eseguire delle anlisi e considerazioni sui risultati ottenuti sono stati fatti diversi accorgimenti sul progetto, di seguito analizzati.
+
+\subsection{Riproducibilità}
+Durante lo sviluppo di un software può capitare di dover rappresentare una situazione, come un bug, una feature, o un risultato particolare. Questa necessità dà luogo al problema della \textit{riproducibilità}, che implica la possibilità allo sviluppatore o a terzi di poter eseguire il software con parametri comuni al fine di ottenere gli stessi risultati e situazioni. Questo obiettivo è stato raggiunto con diversi accorgimenti, come l'elevata flessibilità di configurazione da linea di comando (descritta in dettaglio nel \autoref{chap:pso-extra-guide}) e la possibilità di poter manipolare gli eventi aleatori fissando un \textit{seed}\footnote{Un numero, o vettore, utilizzato per inizializzare un generatore pseudo-casuale di numeri, come quello utilizzato dalla libreria \textit{random} di Python}.
 
 \subsection{Guida allo strumento nello stato attuale}
+\label{chap:pso-extra-guide}
 
 \subsection{Parallelizzazione}
 

@@ -62,4 +62,10 @@
 	},
 	forked edges/.style={for nodewalk={#1}{forked edge}},
 	forked edges/.default=tree,
+	aligned terminal/.style={if n children=0{
+		tier=terminal
+	}{}},
+	germline/.style={
+		for tree = {grow'=0,draw,aligned terminal}, forked edges
+	}
 }
