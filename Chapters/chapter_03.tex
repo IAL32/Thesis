@@ -101,7 +101,7 @@ Possiamo considerare una particella dello swarm come un albero, la cui posizione
   \label{fig:pso-adapt-init-topology}
 \end{figure}
 
-\subsection{Calcolo del movimento della particella}
+\subsection{Calcolo del movimento di una particella}
 \label{chap:pso-adapt-calculate}
 La seconda fase è il calcolo della velocità con la quale una particella si muove rispetto a $p_i$ e $g$, cioè l'albero migliore che ha avuto la particella fino ad ora, e l'albero migliore in tutto lo swarm. Come parametro di paragone è definita la likelihood logaritmica descritta nell'\autoref{eq:art-sasc-lh}.
 
@@ -114,18 +114,19 @@ Nei momenti iniziali di questo progetto, come è stato descritto precedentemente
 \begin{figure}[!h]
   \centering
   \begin{tabular}{*{5}{c}}
-    Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & Tempo Impiegato (s) \\ \midrule \midrule
-    5 & 20 & -8865.285307 & -8029.856799 & 19.102292 \\
-    10 & 20 & -8865.285307 & -8002.707585 & 33.599134 \\
-    50 & 20 & -8341.992690 & -6296.678757 & 179.630704 \\
-    85 & 20 & -8341.992690 & -6804.514080 & 296.845929 \\
-    100 & 20 & -8341.992690 & -6260.733733 & 351.863327 \\
-    150 & 20 & -8163.910048 & -6341.065027 & 536.725522 \\
-    200 & 20 & -7944.950318 & -6897.161794 & 737.740094
+    Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
+    & & & & \\
+    & & & & \\
+    & & & & \\
+    & & & & \\
+    & & & & \\
+    & & & & \\
+    & & & &
   \end{tabular}
   \caption{Risultati ottenuti con assenza della velocità}
   \label{fig:pso-adapt-calculate-1-table}
 \end{figure}
+
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.8 \textwidth]{322_lh_no_velocity.pdf}
@@ -150,7 +151,7 @@ I dati single-cell vengono rappresentati tramite un modello di sostituzione come
 \end{align}
 
 \section{Considerazioni aggiuntive}
-Al fine di poter eseguire delle anlisi e considerazioni sui risultati ottenuti sono stati fatti diversi accorgimenti sul progetto, di seguito analizzati.
+Al fine di poter eseguire delle analisi e considerazioni sui risultati ottenuti sono stati fatti diversi accorgimenti sul progetto, di seguito analizzati.
 
 \subsection{Riproducibilità}
 Durante lo sviluppo di un software può capitare di dover rappresentare una situazione, come un bug, una feature, o un risultato particolare. Questa necessità dà luogo al problema della \textit{riproducibilità}, che implica la possibilità allo sviluppatore o a terzi di poter eseguire il software con parametri comuni al fine di ottenere gli stessi risultati e situazioni. Questo obiettivo è stato raggiunto con diversi accorgimenti, come l'elevata flessibilità di configurazione da linea di comando (descritta in dettaglio nel \autoref{chap:pso-extra-guide}) e la possibilità di poter manipolare gli eventi aleatori fissando un \textit{seed}\footnote{Un numero, o vettore, utilizzato per inizializzare un generatore pseudo-casuale di numeri, come quello utilizzato dalla libreria \textit{random} di Python}.
