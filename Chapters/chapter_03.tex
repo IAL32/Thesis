@@ -152,8 +152,102 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
   \label{fig:pso-adapt-calculate-1-graph}
 \end{figure}
 
-\subsubsection{Velocità come numero di nodi presi dall'albero migliore}
-% TODO:
+\subsubsection{Prima metrica per la distanza tra filogenie}
+\label{chap:pso-adapt-calculate-2}
+Non avere un parametro della velocità è quindi un problema abbastanza importante, e preclude il poter continuare a sviluppare il progetto sotto le condizioni dello sviluppo di un algoritmo genetico di tipo PSO.
+Ci si è quindi concentrati sullo studio di una metrica che permetta di trovare la distanza tra due alberi filogenetici. Il risultato di tale lavoro è stata la formulazione dell'\autoref{eq:pso-adapt-calculate-2-algo-1}. Per il \textit{max\_weight\_matching} (descritto nella \autoref{chap:intro-extra-matching-maxw}) si assume che il grafo $G = (V, E)$ sia formato da tutti i nodi del primo albero, $T_1$ e del secondo albero, $T_2$, in maniera tale da creare un \textit{grafo bipartito}\footnote{Un grafo bipartito è un grafo tale che l'insieme dei suoi vertici si può partizionare in due sottoinsiemi tali che ogni vertice di una di queste due parti è collegate solo a vertici dell'altra}, e la funzione peso $w: E \rightarrow \mathbb{N}$ indichi il numero di mutazioni comuni tra due nodi. Il max weight matching restituisce un arco il cui peso è il massimo rispetto a quello di tutti gli altri archi presenti nel grafo bipartito. Il risultato della formula dovrebbe risultare $0$ quando $T_1, T_2$ rappresentano lo stesso albero, mentre $> 0$ quando differiscono.
+
+\begin{equation}
+  \label{eq:pso-adapt-calculate-2-algo-1}
+  dist(T_1, T_2) = mutations - max\_weight\_matching(T_1, T_2)
+\end{equation}
+
+Un'analisi più approfondita della formula fa però emergere  un problema. La somma delle mutazioni comuni calcolata dalla funzione $w$ cresce all'aumentare della profondita in cui si trova il nodo nell'albero, poiché acquisisce più mutazioni. Un esempio è rappresentato nella \autoref{fig:pso-adapt-calculate-2-msum}
+
+\begin{figure}[!h]
+  \centering
+  \begin{minipage}{.45 \textwidth}
+  \centering
+  \begin{tikzpicture}[every node/.style={circle, draw}]
+    \node at (0, 1) (a1) {};
+    \node at (0, 2) (a2) {};
+    \node at (0, 3) (a3) {};
+    \node at (0, 4) (a4) {};
+    \node at (0, 5) (a5) {};
+
+    \node at (2, 1) (b1) {};
+    \node at (2, 2) (b2) {};
+    \node at (2, 3) (b3) {};
+    \node at (2, 4) (b4) {};
+    \node at (2, 5) (b5) {};
+
+    \draw(a1) -- (b1);
+    \draw(a1) -- (b2);
+    \draw(a1) -- (b3);
+    \draw(a1) -- (b4);
+    \draw(a1) -- (b5);
+
+    \draw(a2) -- (b1);
+    \draw(a2) -- (b2);
+    \draw(a2) -- (b3);
+    \draw(a2) -- (b4);
+    \draw(a2) -- (b5);
+
+    \draw(a3) -- (b1);
+    \draw(a3) -- (b2);
+    \draw(a3) -- (b3);
+    \draw(a3) -- (b4);
+    \draw(a3) -- (b5);
+
+    \draw(a4) -- (b1);
+    \draw(a4) -- (b2);
+    \draw(a4) -- (b3);
+    \draw(a4) -- (b4);
+    \draw(a4) -- (b5);
+
+    \draw(a5) -- (b1);
+    \draw(a5) -- (b2);
+    \draw(a5) -- (b3);
+    \draw(a5) -- (b4);
+    \draw(a5) -- (b5);
+
+
+  \end{tikzpicture}
+  \caption{Esempio di grafo bipartito}
+  \label{fig:pso-adapt-calculate-2-bip}
+  \end{minipage}
+  \begin{minipage}{.45 \textwidth}
+    \centering
+    \begin{forest}
+      germline
+      [{germline} 
+      [{a} 
+      [{b} 
+      [{c} 
+      [{d} ]]]]]
+    \end{forest}\caption{Somma delle mutazioni acquisite per $max(d) = 4$}
+    \begin{forest}
+      germline
+      [{germline}
+      [{a}
+      [{b} ]
+      [{c}
+      [{d} ]]]]
+    \end{forest}
+    \caption{Somma delle mutazioni acquisite per $max(d) = 3$}
+    \label{fig:pso-adapt-calculate-2-msum}
+  \end{minipage}
+\end{figure}
+
+Questo risulta in un calcolo della distanza che può risultare negativo, ed è quindi stato necessario adattare la metrica.
+
+\subsubsection{Seconda metrica per la distanza tra filogenie}
+\label{chap:pso-adapt-calculate-3}
+
+\begin{equation}
+  \label{eq:pso-adapt-calculate-2-algo-1}
+  dist(T_1, T_2) = max \{ \sum_{x \in T_1} m(x), \sum_{x \in T2} m(x) \} - max\_weight\_matching(T_1, T_2)
+\end{equation}
 
 \section{Modello degli errori single-cell}
 \label{chap:pso-matrix}
@@ -179,6 +273,3 @@ Durante lo sviluppo di un software può capitare di dover rappresentare una situ
 
 \subsection{Parallelizzazione}
 
-\section{Risultati e conclusioni}
-
-\section{Prospettive future}
