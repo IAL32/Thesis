@@ -163,14 +163,14 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
 \subsubsection{Prima metrica per la distanza tra filogenie}
 \label{chap:pso-adapt-calculate-2}
 Non avere un parametro della velocità è quindi un problema abbastanza importante, e preclude il poter continuare a sviluppare il progetto sotto le condizioni dello sviluppo di un algoritmo genetico di tipo PSO.
-Ci si è quindi concentrati sullo studio di una metrica che permetta di trovare la distanza tra due alberi filogenetici. Il risultato di tale lavoro è stata la formulazione dell'\autoref{eq:pso-adapt-calculate-2-algo-1}. Per il \textit{max\_weight\_matching} (descritto nella \autoref{chap:intro-extra-matching-maxw}) si assume che il grafo $G = (V, E)$ sia formato da tutti i nodi del primo albero, $T_1$ e del secondo albero, $T_2$, in maniera tale da creare un \textit{grafo bipartito}\footnote{Un grafo bipartito è un grafo tale che l'insieme dei suoi vertici si può partizionare in due sottoinsiemi tali che ogni vertice di una di queste due parti è collegate solo a vertici dell'altra}, e la funzione peso $w: E \rightarrow \mathbb{N}$ indica il numero di mutazioni comuni tra due nodi. Il max weight matching restituisce un arco il cui peso è il massimo rispetto a quello di tutti gli altri archi presenti nel grafo bipartito. Il risultato della formula dovrebbe risultare $0$ quando $T_1, T_2$ rappresentano lo stesso albero, mentre $> 0$ quando differiscono.
+Ci si è quindi concentrati sullo studio di una metrica che permetta di trovare la distanza tra due alberi filogenetici. Il risultato di tale lavoro è stata la formulazione dell'\autoref{eq:pso-adapt-calculate-2-algo-1}. Per il \textit{max\_weight\_matching} (descritto nella \autoref{chap:intro-extra-matching-maxw}) si assume che il grafo $G = (V, E)$ sia formato da tutti i nodi del primo albero, $T_1$ e del secondo albero, $T_2$, in maniera tale da creare un \textit{grafo bipartito}\footnote{Un grafo bipartito è un grafo tale che l'insieme dei suoi vertici si può partizionare in due sottoinsiemi tali che ogni vertice di una di queste due parti è collegate solo a vertici dell'altra}, e la funzione peso $w: E \rightarrow \mathbb{N}$ indica il numero di mutazioni comuni tra due clade (\autoref{chap:intro-clade}). Il max weight matching restituisce un arco il cui peso è il massimo rispetto a quello di tutti gli altri archi presenti nel grafo bipartito. Il risultato della formula dovrebbe risultare $0$ quando $T_1, T_2$ rappresentano lo stesso albero, mentre $> 0$ quando differiscono.
 
 \begin{equation}
   \label{eq:pso-adapt-calculate-2-algo-1}
   dist(T_1, T_2) = mutations - max\_weight\_matching(T_1, T_2)
 \end{equation}
 
-Un'analisi più approfondita della formula fa però emergere  un problema. La somma delle mutazioni comuni calcolata dalla funzione $w$ cresce all'aumentare della profondita in cui si trova il nodo nell'albero, poiché acquisisce più mutazioni. Un esempio è rappresentato nella \autoref{fig:pso-adapt-calculate-2-msum}
+Un'analisi più approfondita della formula fa però emergere  un problema. La somma delle mutazioni comuni calcolata dalla funzione $w$ cresce all'aumentare della profondita in cui si trova il nodo nell'albero, poiché acquisisce più mutazioni. Un esempio è rappresentato nella \autoref{fig:pso-adapt-calculate-2-msum}.
 
 \begin{figure}[!h]
   \centering
@@ -263,8 +263,8 @@ richiamabile con \texttt{networkx.algorithms.matching.max\_weight\_matching(G)},
 
 \subsubsection{Hill climbing con considerazione della distanza}
 \label{chap:pso-adapt-calculate-4}
-Ora che è stata definita una metrica per la distanza, è possibile iniziare a ragionare in maniera più analoga sulla velocità rispetto a quanto non si faceva prima. Si è pensato quindi di utilizzare la nuova metrica introdotta per calcolare la distanza tra la particella attuale $x_i$ e le due particelle migliori $p_i$ e $g$ e scegliere il nodo con meno mutazioni in comune tra l'albero meno distante tra i due. Il nodo scelto randomicamente sarebbe poi stato inserito randomicamente come figlio di un nodo dell'albero attuale, e le mutazioni duplicate rimosse. Nella teoria questo avrebbe dovuto portare ad un graduale avvicinamento della particella attuale verso l'ottimo, nella pratica l'implementazione seguita è risultata, ancora una volta, in un algoritmo di hill climbing.
-Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} si ottengono i risultati rappresentati nella 
+Ora che è stata definita una metrica per la distanza, è possibile iniziare a ragionare in maniera più analoga sulla velocità rispetto a quanto non si faceva prima. Si è pensato quindi di utilizzare la nuova metrica introdotta per calcolare la distanza tra la particella attuale $x_i$ e le due particelle migliori $p_i$ e $g$, e scegliere il clade con meno mutazioni in comune tra l'albero meno distante tra i due. Il clade scelto randomicamente viene poi inserito randomicamente come figlio di un nodo dell'albero attuale, e le mutazioni duplicate rimosse. Nella teoria questo avrebbe dovuto portare ad un graduale avvicinamento della particella attuale verso l'ottimo, nella pratica l'implementazione seguita è risultata, ancora una volta, in un algoritmo di hill climbing.
+Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} si ottengono i risultati rappresentati nella \autoref{fig:pso-adapt-calculate-4-table}. 
 
 \begin{figure}[!h]
   \centering
@@ -276,11 +276,13 @@ Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} 
     85 & 20 & -8341.99268 & -2194.729592 & 410.934185 \\
     100 & 20 & -8341.99268 & -1639.93216 & 591.655797 \\
     150 & 20 & -8163.91004 & -1533.016705 & 789.562396 \\
-    200 & 20 & -7944.95031 & -1366.330875 & 1127.387530
+    200 & 20 & -7944.95031 & -1540.622970 & 1127.387530
   \end{tabular}
   \caption{Risultati ottenuti con considerazione della distanza usando i parametri: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
   \label{fig:pso-adapt-calculate-4-table}
 \end{figure}
+
+Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quasi triplicati, relativamente al fatto che vengono effettuati dei test sulla distanza che incidono negativamente sulle prestazioni. È però da notare che questo aumento dei tempi non coincide con un miglioramento sostanziale della ricerca dell'ottimo da parte dell'algoritmo, ma anzi, sia in media peggiorata. Questo può essere causa di vari fattori, tra cui la possibilità che l'algoritmo si comporti allo stesso modo di quello presentato nella \autoref{chap:pso-adapt-calculate-1}, ma l'introduzione di un nuovo passaggio dell'hill climbing abbia rallentato e peggiorato la scalata.
 
 \begin{figure}[!h]
   \centering
@@ -307,47 +309,82 @@ Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} 
 \begin{figure}[!h]
   \centering
   \scalebox{0.7}{
-  \begin{forest}
-    germline
-    [{germline} 
-    [{20} 
-    [{1} 
-    [{3} 
-    [{29} 
-    [{14} 
-    [{22} 
-    [{14},color=red 
-    [{13} 
-    [{30} 
-    [{19} 
-    [{21} 
-    [{10} 
-    [{25} 
-    [{4} 
-    [{17} 
-    [{16} 
-    [{18} 
-    [{11} 
-    [{28} 
-    [{27} 
-    [{18},color=red ]
-    [{16},color=red 
-    [{15} ]]]
-    [{7}
-    [{8} ]]]]]]]]]]
-    [{2} 
-    [{24} ]]]]]
-    [{6} 
-    [{23} 
-    [{9} ]
-    [{12}
-    [{26} ]]]]]]]]]]
-    [{5} ]]]]
-  \end{forest}
+    \begin{forest}
+      germline
+      [{germline} 
+      [{20} 
+      [{13} 
+      [{1} 
+      [{11} 
+      [{21} 
+      [{25} 
+      [{22} 
+      [{29} 
+      [{18} 
+      [{30} 
+      [{19} 
+      [{3} 
+      [{4} 
+      [{28} 
+      [{10} 
+      [{17} ]]
+      [{27} ]]
+      [{8} ]
+      [{29},color=red 
+      [{4},color=red ]]]
+      [{16} ]]]
+      [{25},color=red 
+      [{23} 
+      [{2} 
+      [{14} ]]
+      [{26} ]
+      [{6} 
+      [{9} 
+      [{12} ]
+      [{5} ]]]]]
+      [{7} ]]]]]]
+      [{24} ]]]]]
+      [{15} ]]]
+    \end{forest}
   }
   \caption{Albero inferito con numero di particelle $=200$ e numero di iterazioni $=20$}
   \label{}
 \end{figure}
+
+\subsubsection{Clade casuali tra $p_i$ e $g$ come avvicinamento all'ottimo}
+\label{chap:pso-adapt-calculate-5}
+Fin'ora nel progetto sono stati implementati algoritmi che assomigliavano per la natura del loro comportamento più ad una scalata della collina (hill climbing) che ad un PSO. È stato quindi un passo fondamentale quello di abbandonare totalmente la copia completa e completa delle particelle $p_i$ e $g$, e di operare in maniera più sistematica.
+
+La metrica della distanza rimane invariata, ma viene introdotta una primitiva logica di \textit{velocità}. Ora l'algoritmo ad ogni iterazione calcola la distanza tra la particella corrente $x_i$, $p_i$ e $g$. Utilizzando le distanze appena ottenute, vengono ricavate due liste di nodi, una per $p_i$ ed una per $g$, i cui elementi hanno la caratteristica di avere un numero massimo di mutazioni minore alla loro distanza relativa alla particella corrente. Questo perché si è pensato che più la particella è distante da un ottimo, più nodi bisogna copiare da quest'ultima affinché ci si possa avvicinare. Più avanti verrà analizzato perché questo approccio non ha del tutto funzionato.
+
+L'algoritmo è descritto di seguito:
+
+\begin{algorithm}[!h]
+    distance\_particle $\gets dist(x_i, p_i)$ \\
+    distance\_swarm $\gets dist(x_i, g)$ \\
+    particle\_clades $\gets$ get\_clades\_max\_nodes(distance\_particle)\\
+    swarm\_clades $\gets$ get\_clades\_max\_nodes(distance\_swarm) \\
+    max\_clades $\gets mc$ \\
+    \If{distance\_particle $<$ max\_clades \texttt{and} distance\_swarm $<$ max\_clades \texttt{or} len(particle\_clades) $==0$ \texttt{and} len(swarm\_clades) $== 0$}{
+      tree $\gets x_i$
+    } \Else{
+      clades\_attach $\gets ()$ \\
+      \If{distance\_particle $==0$ \texttt{or} len(particle\_clades) $==0$}{ \Comment{Same tree as the best in current particle}
+      pick random \textit{max\_clades} from \textit{swarm\_clades}
+      }
+      \ElseIf{distance\_swarm $==0$ \texttt{or} len(swarm\_clades) $==0$}{ \Comment{Same tree as the best in current particle}
+      pick random \textit{max\_clades} from \textit{particle\_clades}
+      }
+      tree $\gets x_i$ \\
+      \For{clade \texttt{in} clades\_attach}{
+        clade\_to\_attach $\gets$ random node from \textit{tree} \\
+        attach\_clade\_and\_fix(clade\_to\_attach, clade)
+      }
+      fix\_for\_losses(tree)
+    }
+    \caption{CasualClades}
+    \label{algo:pso-adapt-calculate-5-algo}
+\end{algorithm}
 
 \section{Modello degli errori single-cell}
 \label{chap:pso-matrix}

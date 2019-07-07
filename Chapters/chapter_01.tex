@@ -164,6 +164,43 @@ In biologia, al fine di poter spiegare le mutazioni che avvengono nel corso dell
 \label{chap:intro-scs}
 La \textit{single-cell sequencing} (SCS) è una tecnica che esamina le informazioni sulle sequenze di singole cellule con tecnologie di sequenziamento di nuova generazione (\textit{NGS}). Il processo dell'amplificazione del genoma\footnote{WGA: whole-genome amplification}, processo essenziale per la SCS, introduce una serie di tipi di rumore, che risulta in inferenze sbagliate sui genotipi. Gli errori comprendono: errori di perdita allelica (ADO), errori di falsi positivi (FPs) e regioni di scarsa copertura. ADO in particolare è un errore frequente nei dati SCS e contribuisce ad un numero considerevole di falsi negativi (FNs) nei dati. Gli algoritmi che verranno introdotti nel \autoref{chap:art} ed il lavoro di questa relazione introdotto nel \autoref{chap:pso} cercano di mitigare questi problemi assumendo che questi errori avvengano uniformemente su tutti i valori della matrice in input, che rappresenta un modello di sostituzione analogo alla \autoref{fig:intro-models-dna-cell-mutations}.
 
+\subsection{Clade}
+\label{chap:intro-clade}
+In filogenetica un clade è un gruppo di organismi che includono un antenato e tutti i discendenti di quell'antenato.
+
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.8}{
+    \begin{forest}
+    germline
+    [, draw=none
+        [Gavialis]
+        [, draw=none
+            [, draw=none
+                [Tomistoma]
+                [, draw=none
+                    [Osteolaemus]
+                    [Crocodylus]
+                ]
+            ]
+            [, draw=none
+                [Alligator]
+                [, draw=none
+                    [Paleosuchus]
+                    [, draw=none
+                        [Caiman]
+                        [Melanosuchus]
+                    ]
+                ]
+            ]
+        ]
+    ]
+    \end{forest}
+    }
+    \caption{Esempio di clade}
+    \label{fig:intro-clade}
+\end{figure}
+
 \section{Richiami di ottimizzazione matematica}
 \label{chap:intro-optim}
 In questa sezione verranno trattate inizialmente nozioni base di ottimizzazione matematica, in particolare sulla ricerca locale dell'ottimo, per poi introdurre due tecniche di ottimizzazione che verranno utilizzate nel \autoref{chap:art}.
