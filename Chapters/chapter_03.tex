@@ -135,20 +135,28 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
     5 & 20 & -8865.285307 & -5807.871680 & 8.622138 \\
     10 & 20 & -8865.285307 & -3096.036336 & 17.478406 \\
-    100 & 20 & -8341.992690 & -1650.249232 & 193.255694 \\
     50 & 20 & -8341.992690 & -2258.473502 & 88.392956 \\
     85 & 20 & -8341.992690 & -1681.115794 & 153.431512 \\
+    100 & 20 & -8341.992690 & -1650.249232 & 193.255694 \\
     150 & 20 & -8163.910048 & -1199.301909 & 275.721155 \\
     200 & 20 & -7944.950318 & -1173.538980 & 370.858453
   \end{tabular}
-  \caption{Risultati ottenuti con assenza della velocità usando i parametri: $\alpha = 0.25, \beta = 1*10^{-5}, k = 3, seed = 1$}
+  \caption{Risultati ottenuti con assenza della velocità usando i parametri: $\alpha = 0.25, \beta = 1*10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
   \label{fig:pso-adapt-calculate-1-table}
 \end{figure}
 
 \begin{figure}[!h]
   \centering
+  \begin{minipage}{.45 \textwidth}
+  \centering
   \includegraphics[width=0.8 \textwidth]{322_lh_no_velocity.pdf}
   \caption{Grafico della likelihood sui vari parametri delle particelle con l'assenza della velocità}
+  \end{minipage}
+  \begin{minipage}{.45 \textwidth}
+    \centering
+    \includegraphics[width=0.8 \textwidth]{322_cpu_no_velocity.pdf}
+    \caption{Grafico del tempo sui vari parametri delle particelle con l'assenza della velocità}
+  \end{minipage}
   \label{fig:pso-adapt-calculate-1-graph}
 \end{figure}
 
@@ -254,7 +262,92 @@ L'algoritmo utilizzato per il maximum weight matching è quello presente all'int
 richiamabile con \texttt{networkx.algorithms.matching.max\_weight\_matching(G)}, ed ha come complessità generale $O(n^3)$. A questo si vanno a sommare i tempi per il calcolo delle mutazioni in comune, che risulta essere $O(n^2 + nm)$ ed il calcolo del numero di mutazioni di un albero $O(n \cdot m)$. In totale, la complessità dell'algoritmo per il calcolo della distanza risulta essere $O(n^3 + n^2 + nm)$.
 
 \subsubsection{Hill climbing con considerazione della distanza}
-Ora che è stata definita una metrica per la distanza, è possibile iniziare a ragionare in maniera più analoga sulla velocità rispetto a quanto non si faceva prima. Si è pensato quindi di utilizzare la nuova metrica introdotta per calcolare la distanza tra la particella attuale $x_i$ e tutte le altre particelle $\{x_1, x_2, \dots, x_n\} \setminus x_i$.
+\label{chap:pso-adapt-calculate-4}
+Ora che è stata definita una metrica per la distanza, è possibile iniziare a ragionare in maniera più analoga sulla velocità rispetto a quanto non si faceva prima. Si è pensato quindi di utilizzare la nuova metrica introdotta per calcolare la distanza tra la particella attuale $x_i$ e le due particelle migliori $p_i$ e $g$ e scegliere il nodo con meno mutazioni in comune tra l'albero meno distante tra i due. Il nodo scelto randomicamente sarebbe poi stato inserito randomicamente come figlio di un nodo dell'albero attuale, e le mutazioni duplicate rimosse. Nella teoria questo avrebbe dovuto portare ad un graduale avvicinamento della particella attuale verso l'ottimo, nella pratica l'implementazione seguita è risultata, ancora una volta, in un algoritmo di hill climbing.
+Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} si ottengono i risultati rappresentati nella 
+
+\begin{figure}[!h]
+  \centering
+  \begin{tabular}{*{5}{c}}
+    Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
+    5 & 20 & -8865.28530 & -8157.01522 & 17.90602278 \\
+    10 & 20 & -8865.28530 & -7702.05544 & 41.00506496 \\
+    50 & 20 & -8341.99268 & -3583.960402 & 239.6226656 \\
+    85 & 20 & -8341.99268 & -2194.729592 & 410.934185 \\
+    100 & 20 & -8341.99268 & -1639.93216 & 591.655797 \\
+    150 & 20 & -8163.91004 & -1533.016705 & 789.562396 \\
+    200 & 20 & -7944.95031 & -1366.330875 & 1127.387530
+  \end{tabular}
+  \caption{Risultati ottenuti con considerazione della distanza usando i parametri: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
+  \label{fig:pso-adapt-calculate-4-table}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \begin{minipage}{.45 \textwidth}
+  \centering
+  \includegraphics[width=0.8 \textwidth]{3224_lh_distance_bad.pdf}
+  \caption{Grafico della likelihood sui vari parametri delle particelle con considerazione della distanza}
+  \end{minipage}
+  \begin{minipage}{.45 \textwidth}
+    \centering
+    \includegraphics[width=0.8 \textwidth]{322_cpu_no_velocity.pdf}
+    \caption{Grafico del tempo sui vari parametri delle particelle con considerazione della distanza}
+  \end{minipage}
+  \label{fig:pso-adapt-calculate-1-graph}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8 \textwidth]{3224_data_best.pdf}
+  \caption{Grafici sui tempi ed il miglioramento della likelihood con il passare del tempo}
+  \label{}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \scalebox{0.7}{
+  \begin{forest}
+    germline
+    [{germline} 
+    [{20} 
+    [{1} 
+    [{3} 
+    [{29} 
+    [{14} 
+    [{22} 
+    [{14},color=red 
+    [{13} 
+    [{30} 
+    [{19} 
+    [{21} 
+    [{10} 
+    [{25} 
+    [{4} 
+    [{17} 
+    [{16} 
+    [{18} 
+    [{11} 
+    [{28} 
+    [{27} 
+    [{18},color=red ]
+    [{16},color=red 
+    [{15} ]]]
+    [{7}
+    [{8} ]]]]]]]]]]
+    [{2} 
+    [{24} ]]]]]
+    [{6} 
+    [{23} 
+    [{9} ]
+    [{12}
+    [{26} ]]]]]]]]]]
+    [{5} ]]]]
+  \end{forest}
+  }
+  \caption{Albero inferito con numero di particelle $=200$ e numero di iterazioni $=20$}
+  \label{}
+\end{figure}
 
 \section{Modello degli errori single-cell}
 \label{chap:pso-matrix}
