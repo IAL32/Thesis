@@ -34,6 +34,19 @@ Una delle principali sfide in questo progetto è stata di riuscire a trovare un'
   \item Aggiornamento della particella migliore dello swarm e della soluzione migliore della particella
 \end{enumerate}
 
+\section{Modello degli errori single-cell}
+\label{chap:pso-matrix}
+I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nella \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà è un $1$:
+\begin{align}
+    \label{eq:pso-intro-model-matrix}
+    \begin{split}
+      P(M_{i,j} = 0 | D_{i,j} = 0) = 1 - \alpha, \qquad
+      &P(M_{i,j} = 0 | D_{i,j} = 1) = \beta, \\
+      P(M_{i,j} = 1 | D_{i,j} = 0) = \alpha, \qquad
+      &P(M_{i,j} = 1 | D_{i,j} = 1) = 1 - \beta
+    \end{split}
+\end{align}
+
 \subsection{Inizializzazione}
 \label{chap:pso-adapt-init}
 Possiamo considerare una particella dello swarm come un albero, la cui posizione è determinata dalla configurazione dei suoi nodi. L'inizializzazione viene effettuata randomizzando la topologia di un albero binario $T$ con $m$ nodi, uno per ogni mutazione, con una funzione randomica\footnote{In realtà la funzione è del tipo pseudo-randomica, utilizzando il generatore \textit{Mersenne Twister} \cite{Matsumoto:MersenneTwister}, ma non avendo problemi dal punto di vista della sicurezza o della riproducibilità, è stato pervenuto che per i nostri scopi è più che valido e sufficiente}. In questo modo, viene ottenuta una topologia simile a quella rappresentata nella \autoref{fig:pso-adapt-init-topology}. Il metodo di generazione dell'albero binario è ripreso da quello implementato su SASC, ed è descritto nell'\autoref{algo:pso-adapt-init}.
@@ -101,11 +114,15 @@ Possiamo considerare una particella dello swarm come un albero, la cui posizione
   \label{fig:pso-adapt-init-topology}
 \end{figure}
 
+La complessità di questo algoritmo è facilmente espressa da $O(m)$, poiché viene creato un nodo per ogni mutazione.
+
 \subsection{Calcolo del movimento di una particella}
 \label{chap:pso-adapt-calculate}
 La seconda fase è il calcolo della velocità con la quale una particella si muove rispetto a $p_i$ e $g$, cioè l'albero migliore che ha avuto la particella fino ad ora, e l'albero migliore in tutto lo swarm. Come parametro di paragone è definita la likelihood logaritmica descritta nell'\autoref{eq:art-sasc-lh}.
 
 Questo step è stato uno dei problemi principali da affrontare sin dal principio del progetto. Non è immediato trovare un modello diretto che rappresenti la velocità e la direzione di una particella verso gli alberi migliori $p_i$ e $g$, data la natura non lineare del problema. Sono state, dunque, introdotte diverse metriche (o assenza di tali) per cercare di definire al meglio questo parametro in maniera tale che aderisse al meglio all'algoritmo scelto, quindi PSO. Nelle seguenti sottosezioni verranno descritti tali esperimenti, con risultati e considerazioni del caso.
+
+La complessità della solo ricerca di un modello per il parametro della velocità ha portato a tralasciare, almeno temporaneamente, altri fattori presenti nel PSO originale, quali ad esempio l'\textit{attrito} ($\omega$) ed i \textit{learning factors} ($\phi_p, \phi_g$), fattori moltiplicativi utili per velocizzare o rallentare il comportamento di scalata della collina dell'algoritmo.
 
 \subsubsection{Assenza del parametro di velocità}
 \label{chap:pso-adapt-calculate-1}
@@ -128,8 +145,7 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
     \caption{ParticleIteration}
     \label{algo:pso-adapt-calculate-1}
 \end{algorithm}
-
-\begin{figure}[!h]
+\begin{table}[!h]
   \centering
   \begin{tabular}{*{5}{c}}
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
@@ -142,22 +158,71 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
     200 & 20 & -7944.95031 & -1173.53898 & 370.858453
   \end{tabular}
   \caption{Risultati ottenuti con assenza della velocità usando i parametri: $\alpha = 0.25, \beta = 1*10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
-  \label{fig:pso-adapt-calculate-1-table}
-\end{figure}
-
+  \label{tab:pso-adapt-calculate-1-table}
+\end{table}
 \begin{figure}[!h]
   \centering
   \begin{minipage}{.45 \textwidth}
   \centering
-  \includegraphics[width=0.8 \textwidth]{322_lh_no_velocity.pdf}
+  \includegraphics[width=0.8 \textwidth]{3221_lh.pdf}
   \caption{Grafico della likelihood sui vari parametri delle particelle con l'assenza della velocità}
   \end{minipage}
   \begin{minipage}{.45 \textwidth}
     \centering
-    \includegraphics[width=0.8 \textwidth]{322_cpu_no_velocity.pdf}
+    \includegraphics[width=0.8 \textwidth]{3221_cpu.pdf}
     \caption{Grafico del tempo sui vari parametri delle particelle con l'assenza della velocità}
   \end{minipage}
   \label{fig:pso-adapt-calculate-1-graph}
+\end{figure}
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8 \textwidth]{3221_data.pdf}
+  \caption{Grafici sui tempi ed il miglioramento della likelihood con l'assenza della velocità}
+  \label{fig:pso-adapt-calculate-4-data}
+\end{figure}
+\begin{figure}[!h]
+  \centering
+  \scalebox{0.7}{
+  \begin{forest}
+    germline
+    [{germline} 
+    [{29} 
+    [{21} 
+    [{22} 
+    [{20} 
+    [{4} 
+    [{13} 
+    [{1} 
+    [{3} 
+    [{19} 
+    [{30} 
+    [{25} 
+    [{18} 
+    [{23} 
+    [{28} 
+    [{11} 
+    [{27} 
+    [{17} ]]
+    [{16} 
+    [{12} 
+    [{5} 
+    [{9} 
+    [{26} ]
+    [{6} ]]]
+    [{8} 
+    [{7} ]]]]
+    [{28},color=red 
+    [{10} ]]
+    [{15} ]]]]]
+    [{3},color=red 
+    [{30},color=red ]]]]]]
+    [{24} ]
+    [{14} 
+    [{2} ]]]]]]]]]]
+  \end{forest}
+  }
+  \caption{Albero inferito con il metodo nella \autoref{chap:pso-adapt-calculate-1}, $likelihood = -1173.53898$}
+  \label{fig:pso-adapt-calculate-1-tree}
 \end{figure}
 
 \subsubsection{Prima metrica per la distanza tra filogenie}
@@ -266,21 +331,21 @@ richiamabile con \texttt{networkx.algorithms.matching.max\_weight\_matching(G)},
 Ora che è stata definita una metrica per la distanza, è possibile iniziare a ragionare in maniera più analoga sulla velocità rispetto a quanto non si faceva prima. Si è pensato quindi di utilizzare la nuova metrica introdotta per calcolare la distanza tra la particella attuale $x_i$ e le due particelle migliori $p_i$ e $g$, e scegliere il clade con meno mutazioni in comune tra l'albero meno distante tra i due. Il clade scelto randomicamente viene poi inserito randomicamente come figlio di un nodo dell'albero attuale, e le mutazioni duplicate rimosse. Nella teoria questo avrebbe dovuto portare ad un graduale avvicinamento della particella attuale verso l'ottimo, nella pratica l'implementazione seguita è risultata, ancora una volta, in un algoritmo di hill climbing.
 Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} si ottengono i risultati rappresentati nella \autoref{fig:pso-adapt-calculate-4-table}. 
 
-\begin{figure}[!h]
+\begin{table}[!h]
   \centering
   \begin{tabular}{*{5}{c}}
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
-    5 & 20 & -8865.28530 & -8157.01522 & 17.90602278 \\
-    10 & 20 & -8865.28530 & -7702.05544 & 41.00506496 \\
-    50 & 20 & -8341.99268 & -3583.960402 & 239.6226656 \\
-    85 & 20 & -8341.99268 & -2194.729592 & 410.934185 \\
-    100 & 20 & -8341.99268 & -1639.93216 & 591.655797 \\
-    150 & 20 & -8163.91004 & -1533.016705 & 789.562396 \\
-    200 & 20 & -7944.95031 & -1540.622970 & 1127.387530
+    5 & 20 & -8865.28530 & -7267.75496 & 19.66558 \\
+    10 & 20 & -8865.28530 & -3207.95706 & 43.66173 \\
+    50 & 20 & -8341.99268 & -2773.96311 & 239.89298 \\
+    85 & 20 & -8341.99268 & -1664.407183 & 430.08543 \\
+    100 & 20 & -8341.99268 & -1720.876536 & 602.24159 \\
+    150 & 20 & -8163.91004 & -1594.589690 & 825.43232 \\
+    200 & 20 & -7944.95031 & -1360.172665 & 1147.3371 \\
   \end{tabular}
   \caption{Risultati ottenuti con considerazione della distanza usando i parametri: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
-  \label{fig:pso-adapt-calculate-4-table}
-\end{figure}
+  \label{tab:pso-adapt-calculate-4-table}
+\end{table}
 
 Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quasi triplicati, relativamente al fatto che vengono effettuati dei test sulla distanza che incidono negativamente sulle prestazioni. È però da notare che questo aumento dei tempi non coincide con un miglioramento sostanziale della ricerca dell'ottimo da parte dell'algoritmo, ma anzi, sia in media peggiorata. Questo può essere causa di vari fattori, tra cui la possibilità che l'algoritmo si comporti allo stesso modo di quello presentato nella \autoref{chap:pso-adapt-calculate-1}, ma l'introduzione di un nuovo passaggio dell'hill climbing abbia rallentato e peggiorato la scalata. Un esempio dell'albero inferito con 200 particelle è rappresentato nella \autoref{fig:pso-adapt-calculate-4-tree}, mentre i dati relativi all'andamento del tempo di calcolo e della likelihood nel corso delle varie iterazioni sono rappresentati in \autoref{fig:pso-adapt-calculate-4-data}.
 
@@ -288,12 +353,12 @@ Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quas
   \centering
   \begin{minipage}{.45 \textwidth}
   \centering
-  \includegraphics[width=0.8 \textwidth]{3224_lh_distance_bad.pdf}
+  \includegraphics[width=0.8 \textwidth]{3224_lh.pdf}
   \caption{Grafico della likelihood sui vari parametri delle particelle con considerazione della distanza}
   \end{minipage}
   \begin{minipage}{.45 \textwidth}
     \centering
-    \includegraphics[width=0.8 \textwidth]{322_cpu_no_velocity.pdf}
+    \includegraphics[width=0.8 \textwidth]{3224_cpu.pdf}
     \caption{Grafico del tempo sui vari parametri delle particelle con considerazione della distanza}
   \end{minipage}
   \label{fig:pso-adapt-calculate-1-graph}
@@ -301,7 +366,7 @@ Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quas
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=0.8 \textwidth]{3224_data_best.pdf}
+  \includegraphics[width=0.8 \textwidth]{3224_data.pdf}
   \caption{Grafici sui tempi ed il miglioramento della likelihood con il passare del tempo}
   \label{fig:pso-adapt-calculate-4-data}
 \end{figure}
@@ -350,11 +415,9 @@ Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quas
   \caption{Albero inferito con il metodo nella \autoref{chap:pso-adapt-calculate-4}, $likelihood = -1540.622970$}
   \label{fig:pso-adapt-calculate-4-tree}
 \end{figure}
-
 \subsubsection{Clade casuali tra $p_i$ e $g$ come avvicinamento all'ottimo}
 \label{chap:pso-adapt-calculate-5}
 Fin'ora nel progetto sono stati implementati algoritmi che assomigliavano per la natura del loro comportamento più ad una scalata della collina (hill climbing) che ad un PSO. È stato quindi un passo fondamentale quello di abbandonare totalmente la copia completa delle particelle migliori $p_i$ e $g$, e di operare in maniera più sistematica.
-
 La metrica della distanza rimane invariata, ma è stata introdotta una primitiva logica di \textit{velocità}. Ora l'\autoref{algo:pso-adapt-calculate-5-algo} ad ogni iterazione calcola la distanza tra la particella corrente $x_i$, $p_i$ e $g$. Utilizzando le distanze appena ottenute, vengono ricavate due liste di nodi, una per $p_i$ ed una per $g$, i cui elementi hanno la caratteristica di avere un numero massimo di mutazioni minore alla loro distanza relativa alla particella corrente. Questo perché si è pensato che più la particella è distante da un ottimo, più nodi bisogna copiare da quest'ultima affinché ci si possa avvicinare.
 
 \begin{algorithm}[!h]
@@ -383,10 +446,9 @@ La metrica della distanza rimane invariata, ma è stata introdotta una primitiva
     \caption{CasualClades}
     \label{algo:pso-adapt-calculate-5-algo}
 \end{algorithm}
+Analizzando i risultati ottenuti nella tabella \autoref{fig:pso-adapt-calculate-5-table}, si può intuire come l'algoritmo sia migliorato sostanzialmente rispetto all'approccio descritto nella \autoref{chap:pso-adapt-calculate-4}: i tempi sono diminuiti in rapporto al numero di particelle ed alla likelihood ottenuta, ed ora le particelle si spostano effettivamente in maniera coerente rispetto al PSO. Si può chiaramente però notare come la likelihood finale per ogni iterazione si allontani sempre di più rispetto all'ottimo. Questo non è da considerarsi come un vero e proprio problema, poiché come è stato evidenziato nella \autoref{chap:pso-adapt-calculate-1}, è più importante la \textit{bontà} del risultato, ed è quindi più importante permettere all'algoritmo di esplorare lo spazio di ricerca in maniera più ampia a discapito della velocità con la quale arriva all'ottimo vero e proprio.
 
-Analizzando i risultati ottenuti nella tabella \autoref{fig:pso-adapt-calculate-5-table}, si può intuire come l'algoritmo sia migliorato sostanzialmente rispetto all'approccio descritto nella \autoref{chap:pso-adapt-calculate-4}: i tempi sono diminuiti in rapporto al numero di particelle ed alla likelihood ottenuta, ed ora le particelle si spostano effettivamente in maniera coerente rispetto al PSO.
-
-\begin{figure}[!h]
+\begin{table}[!h]
   \centering
   \begin{tabular}{*{5}{c}}
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
@@ -398,29 +460,29 @@ Analizzando i risultati ottenuti nella tabella \autoref{fig:pso-adapt-calculate-
     150 & 20 & -8163.91004 & -2131.475215 & 681.9648 \\
     200 & 20 & -7944.95031 & -1844.15747 & 974.8296 \\
   \end{tabular}
-  \caption{Risultati ottenuti con considerazione della distanza e random clade da $p_i, g$ usando i parametri: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
-  \label{fig:pso-adapt-calculate-5-table}
-\end{figure}
+  \caption{Risultati con il metodo nella \autoref{chap:pso-adapt-calculate-4} usando i parametri: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
+  \label{tab:pso-adapt-calculate-5-table}
+\end{table}
 
 \begin{figure}[!h]
   \centering
   \begin{minipage}{.45 \textwidth}
   \centering
-  \includegraphics[width=0.8 \textwidth]{3225_lh_distance.pdf}
-  \caption{Grafico della likelihood sui vari parametri delle particelle con algoritmo della distanza}
+  \includegraphics[width=0.8 \textwidth]{3225_lh.pdf}
+  \caption{Grafico della likelihood con il metodo nella \autoref{chap:pso-adapt-calculate-5}}
   \end{minipage}
   \begin{minipage}{.45 \textwidth}
     \centering
-    \includegraphics[width=0.8 \textwidth]{322_cpu_no_velocity.pdf}
-    \caption{Grafico del tempo sui vari parametri delle particelle con algoritmo della distanza}
+    \includegraphics[width=0.8 \textwidth]{3225_cpu.pdf}
+    \caption{Grafico del tempo con il metodo nella \autoref{chap:pso-adapt-calculate-5}}
   \end{minipage}
   \label{fig:pso-adapt-calculate-1-graph}
 \end{figure}
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=0.8 \textwidth]{3225_data_best.pdf}
-  \caption{Grafici sui tempi ed il miglioramento della likelihood con il passare del tempo}
+  \includegraphics[width=0.8 \textwidth]{3225_data.pdf}
+  \caption{Grafici sui tempi ed il miglioramento della likelihood con il passare del tempo con il metodo nella \autoref{chap:pso-adapt-calculate-5}}
   \label{fig:pso-adapt-calculate-4-data}
 \end{figure}
 
@@ -466,19 +528,6 @@ Analizzando i risultati ottenuti nella tabella \autoref{fig:pso-adapt-calculate-
   \label{fig:pso-adapt-calculate-5-tree}
 \end{figure}
 
-\section{Modello degli errori single-cell}
-\label{chap:pso-matrix}
-I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nella \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà è un $1$:
-\begin{align}
-    \label{eq:pso-intro-model-matrix}
-    \begin{split}
-      P(M_{i,j} = 0 | D_{i,j} = 0) = 1 - \alpha, \qquad
-      &P(M_{i,j} = 0 | D_{i,j} = 1) = \beta, \\
-      P(M_{i,j} = 1 | D_{i,j} = 0) = \alpha, \qquad
-      &P(M_{i,j} = 1 | D_{i,j} = 1) = 1 - \beta
-    \end{split}
-\end{align}
-
 \section{Considerazioni aggiuntive}
 \label{chap:pso-extra}
 Al fine di poter eseguire delle analisi e considerazioni sui risultati ottenuti sono stati fatti diversi accorgimenti sul progetto, di seguito analizzati.
@@ -490,6 +539,7 @@ Durante lo sviluppo di un software può capitare di dover rappresentare una situ
 \subsection{Guida allo strumento nello stato attuale}
 \label{chap:pso-extra-guide}
 
-
 \subsection{Parallelizzazione}
 \label{chap:pso-extra-paral}
+Tutti i test effettuati in questa sezione sono stati effettuati seguendo l'algoritmo del PSO, cioè in maniera iterativa. È stato possibile implementare un sistema di parallelizzazione dei processi. Ogni processo può eseguire un'iterazione di una particella per volta, riducendo drasticamente i tempi di esecuzione.
+Non viene però utilizzata la tecnica di parallelizzazione durante i test, poiché questa aggiunge un fattore di aleicità collegato alla terminazione anticipata dei processi.

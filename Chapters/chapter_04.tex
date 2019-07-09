@@ -1,3 +1,40 @@
 \chapter{Risultati e conclusioni}
+\section{Risultati su dati simulati}
+I test nel capitolo precedente sono stati effettuati su dati simulati generati dal laboratorio di ricerca AlgoLab, sede dello stage, per lo strumento SASC (\autoref{chap:art-sasc}). Di questi dati è conosciuta la filogenia di partenza, rappresentata in \autoref{fig:results-phylogeny}. Per la natura aleatoria e non deterministica della ricerca dell'euristica adottata, non è possibile garantire che una volta raggiunto un ottimo (locale o globale) questo corrisponda alla filogenia di partenza.
+
+\begin{figure}[!h]
+    \centering
+    \begin{forest}
+        germline
+        [germline,
+        [{1, 13, 20, 21, 22, 29}
+            [{3, 4, 19, 25, 30},
+                [11,
+                    [18,
+                        [{10, 15}]
+                        [{17, 27, 28}]
+                        [{7, 6, 16}]
+                    ]
+                ]
+            ]
+            [{5, 6, 9, 12, 23, 26}]
+            [{2, 14, 24}]
+        ]]
+    \end{forest}
+    \caption{Filogenia generata di test}
+    \label{fig:results-phylogeny}
+\end{figure}
+
+Nella \autoref{fig:results-table} messe a paragone le tecniche adottate nel capitolo precedente.
+
+\begin{figure}[!h]
+    \centering
+    \begin{tabular}{c | c | c }
+        Tecnica & Tempo impiegato & Likelihood \\ \midrule \midrule 
+        TT & T & L
+    \end{tabular}
+    \caption{Tabella di paragone delle tecniche utilizzate}
+    \label{fig:results-table}
+\end{figure}
 
 \section{Prospettive future}

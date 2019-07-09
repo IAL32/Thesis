@@ -63,7 +63,5 @@ Ad ogni riduzione della temperatura viene cercato un albero topologicamente vici
 \end{equation}
 
 \subsection{Complessità}
-L'algoritmo Simulated Annealing impiega $O(\log t)$ step fino a quando non raggiunge la temperatura minima, con $t$ ad indicare la temperatura di partenza, e per ogni step impiega $O(n m)$ per calcolare la likelihood logaritmica. In generale, SASC ha una complessità di $O(nm \log t)$.
+L'algoritmo Simulated Annealing impiega $O(\log t)$ step fino a quando non raggiunge la temperatura minima, con $t$ ad indicare la temperatura di partenza, e per ogni step impiega $O(n m)$ per calcolare la likelihood logaritmica. Lo strumento genera inizialmente un albero con $m$ nodi, con una complessità generale di $m$. In generale, SASC ha una complessità di $O(nm \log t + m)$.
 % TODO: check complexity calculation for SASC
-
-  

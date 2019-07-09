@@ -40,7 +40,7 @@ Le cellule costituiscono le fondamenta di tutti gli organismi viventi. Il corpo 
 \begin{wrapfigure}{r}{0.5 \textwidth}
     \centering
     \includegraphics[width=0.15 \textwidth]{1_dna.png}
-    \caption{Il DNA}
+    \caption{DNA}
     \label{fig:intro-biology-dna}
 \end{wrapfigure}
 
@@ -127,9 +127,9 @@ La \autoref{fig:intro-models-dna-sequence} rappresenta un esempio di \textit{mod
     \label{fig:intro-models-cladistica-sequence}
 \end{figure}
 
-L'esempio in \autoref{fig:intro-models-cladistica-sequence} può ipoteticamente rappresentare due specie: la prima può digerire i latticini, non depone uova, è una creatura a sangue freddo, vola e sa nuotare; la seconda non può digerire i latticini, può deporre uova, è una creatura a sangue caldo, vola e non sa nuotare. Lo stesso ragionamento può essere utilizzato per rappresentare le \textit{mutazioni} presenti all'interno di una cellula nel caso di cellule tumorali (\autoref{fig:intro-models-dna-cell-mutations}).
+L'esempio in \autoref{fig:intro-models-cladistica-sequence} può ipoteticamente rappresentare due specie: la prima può digerire i latticini, non depone uova, è una creatura a sangue freddo, vola e sa nuotare; la seconda non può digerire i latticini, può deporre uova, è una creatura a sangue caldo, vola e non sa nuotare. Lo stesso ragionamento può essere utilizzato per rappresentare le \textit{mutazioni} presenti all'interno di una cellula nel caso di cellule tumorali (\autoref{tab:intro-models-dna-cell-mutations}).
 
-\begin{figure}[!h]
+\begin{table}[!h]
     \centering
     \begin{tabular}{*{20}{c}}
         \mcrot{1}{l}{60}{BBS4} & \mcrot{1}{l}{60}{CAMSAP1} & \mcrot{1}{l}{60}{DOCK3} & \mcrot{1}{l}{60}{EPHA10} & \mcrot{1}{l}{60}{EYA4} & \mcrot{1}{l}{60}{HIPK4} & \mcrot{1}{l}{60}{HIST1H2AG} & \mcrot{1}{l}{60}{INTS8} & \mcrot{1}{l}{60}{MAL2} & \mcrot{1}{l}{60}{MYOM3} & \mcrot{1}{l}{60}{OAZ3} & \mcrot{1}{l}{60}{PPIG} & \mcrot{1}{l}{60}{PTPRQ} & \mcrot{1}{l}{60}{RGS11} & \mcrot{1}{l}{60}{RYR3} & \mcrot{1}{l}{60}{SERPINF2} & \mcrot{1}{l}{60}{SMOC1} & \mcrot{1}{l}{60}{TTN} & \mcrot{1}{l}{60}{TUFT1} & \mcrot{1}{l}{60}{ZNF540}\\
@@ -149,8 +149,8 @@ L'esempio in \autoref{fig:intro-models-cladistica-sequence} può ipoteticamente 
     \end{tabular}
     \caption{Dataset di cellule tumorali e delle relative mutazioni}
     % TODO: aggiungere source, chiedere a @sciccolella
-    \label{fig:intro-models-dna-cell-mutations}
-\end{figure}
+    \label{tab:intro-models-dna-cell-mutations}
+\end{table}
 
 \subsubsection{Tipi di modello di sostituzione}
 \label{chap:intro-models-types}
@@ -162,7 +162,7 @@ In biologia, al fine di poter spiegare le mutazioni che avvengono nel corso dell
 
 \subsection{Single-Cell Sequencing}
 \label{chap:intro-scs}
-La \textit{single-cell sequencing} (SCS) è una tecnica che esamina le informazioni sulle sequenze di singole cellule con tecnologie di sequenziamento di nuova generazione (\textit{NGS}). Il processo dell'amplificazione del genoma\footnote{WGA: whole-genome amplification}, processo essenziale per la SCS, introduce una serie di tipi di rumore, che risulta in inferenze sbagliate sui genotipi. Gli errori comprendono: errori di perdita allelica (ADO), errori di falsi positivi (FPs) e regioni di scarsa copertura. ADO in particolare è un errore frequente nei dati SCS e contribuisce ad un numero considerevole di falsi negativi (FNs) nei dati. Gli algoritmi che verranno introdotti nel \autoref{chap:art} ed il lavoro di questa relazione introdotto nel \autoref{chap:pso} cercano di mitigare questi problemi assumendo che questi errori avvengano uniformemente su tutti i valori della matrice in input, che rappresenta un modello di sostituzione analogo alla \autoref{fig:intro-models-dna-cell-mutations}.
+La \textit{single-cell sequencing} (SCS) è una tecnica che esamina le informazioni sulle sequenze di singole cellule con tecnologie di sequenziamento di nuova generazione (\textit{NGS}). Il processo dell'amplificazione del genoma\footnote{WGA: whole-genome amplification}, processo essenziale per la SCS, introduce una serie di tipi di rumore, che risulta in inferenze sbagliate sui genotipi. Gli errori comprendono: errori di perdita allelica (ADO), errori di falsi positivi (FPs) e regioni di scarsa copertura. ADO in particolare è un errore frequente nei dati SCS e contribuisce ad un numero considerevole di falsi negativi (FNs) nei dati. Gli algoritmi che verranno introdotti nel \autoref{chap:art} ed il lavoro di questa relazione introdotto nel \autoref{chap:pso} cercano di mitigare questi problemi assumendo che questi errori avvengano uniformemente su tutti i valori della matrice in input, che rappresenta un modello di sostituzione analogo alla \autoref{tab:intro-models-dna-cell-mutations}.
 
 \subsection{Clade}
 \label{chap:intro-clade}
@@ -434,7 +434,7 @@ Le probabilità di transizione in un dato tempo $t$ per ogni stato della catena 
 
 Questo significa che ogni riga della matrice è un \textit{vettore di probabilità}, e la somma dei suoi elementi è sempre $1$. 
 
-Una matrice di transizione $P_t^(k) = P_t \cdot P_{t + 1} \cdots P_{t + k - 1}$ soddisfa quindi: 
+Una matrice di transizione $P_t^{(k)} = P_t \cdot P_{t + 1} \cdots P_{t + k - 1}$ soddisfa quindi: 
 
 \begin{equation}
     P_t^{(k)} = \begin{pmatrix}
@@ -467,34 +467,35 @@ Volendo ad esempio stimare una distribuzione a posteriori\footnote{Distribuzione
 \label{chap:intro-extra-lh}
 Uno dei problemi della genomica (ma anche di altri campi, come la linguistica \cite{phylogenylinguistical}) è quello di ricostruire un albero filogenetico partendo da dati raccolti di caratteri appartenenti una popolazione. I dati in questione seguono il modello di sostituzione (\autoref{chap:intro-models}) ed i tratti possono essere qualunque aspetto della popolazione, come altezza, peso, capacità di volare o di respirare sott'acqua. Nel presente lavoro, la popolazione presa in analisi sono cellule, ed i tratti considerati sono le mutazioni acquisite, ed il problema si può interpretare come la ricerca del migliore albero filogenetico che meglio rappresenta il modello di sostituzione. Per stabilire come un albero è \textit{migliore} di un altro, viene definita una funzione di \textit{likelihood}, che esprime appunto quanto è probabile un particolare set di parametri stastistici (nel nostro caso la configurazione dei nodi dell'albero inferito) data il modello di sostituzione iniziale. Supponendo di aver generato un albero $T$ con $n$ nodi, un nodo per ogni mutazione, e ad ogni foglia può essere associata una cellula. Le cellule così assegnate avranno una serie di caratteri, che vengono acquisiti o persi una volta per ogni nodo padre.
 
-\begin{figure}[!h]
-    \begin{subfigure}[b]{0.5 \textwidth}
-        \centering
-        \begin{tabular}{*{4}{c}}
-            a & b & c & d \\ \midrule \midrule
-            1 & 0 & 0 & 0 \\
-            0 & 1 & 0 & 0 \\
-            1 & 0 & 1 & 0 \\
-            1 & 0 & 1 & 1
-        \end{tabular}
-        \caption{Modello di sostituzione}
-        \label{fig:intro-extra-lh-tree-matrix}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.5 \textwidth}
-        \centering
-        \begin{forest}
-            germline
-            [root,
-                [a, [c, [d]] ]
-                [b]
-            ]
-        \end{forest}
-        \caption{Esempio di albero inferito}
-        \label{fig:intro-extra-lh-tree-model}
-    \end{subfigure}
-    \caption{}
-    \label{fig:intro-extra-lh-tree}
-\end{figure}
+\begin{minipage}{\textwidth}
+\centering
+\begin{minipage}{0.45 \textwidth}
+    \centering
+    \begin{tabular}{*{4}{c}}
+        a & b & c & d \\ \midrule \midrule
+        1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        1 & 0 & 1 & 0 \\
+        1 & 0 & 1 & 1
+    \end{tabular}
+    \captionof{table}{Modello di sostituzione}
+    \label{tab:intro-extra-lh-tree-matrix}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45 \textwidth}
+    \centering
+    \begin{forest}
+        germline
+        [root,
+            [a, [c, [d]] ]
+            [b]
+        ]
+    \end{forest}
+    \captionof{figure}{Esempio di albero inferito}
+    \label{fig:intro-extra-lh-tree-model}
+\end{minipage}
+\end{minipage}
+
 
 Il calcolo della likelihood $\mathcal{L}$ si basa sulla probabilità condizionata della configurazione attuale dell'albero $T$ dato il modello di sostituzione in input $M$, con $n$ righe (una per ogni cellula) e $m$ colonne (una per ogni mutazione), che si traduce in termini generali nella formula che segue:
 
