@@ -133,13 +133,13 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
   \centering
   \begin{tabular}{*{5}{c}}
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
-    5 & 20 & -8865.285307 & -5807.871680 & 8.622138 \\
-    10 & 20 & -8865.285307 & -3096.036336 & 17.478406 \\
-    50 & 20 & -8341.992690 & -2258.473502 & 88.392956 \\
-    85 & 20 & -8341.992690 & -1681.115794 & 153.431512 \\
-    100 & 20 & -8341.992690 & -1650.249232 & 193.255694 \\
-    150 & 20 & -8163.910048 & -1199.301909 & 275.721155 \\
-    200 & 20 & -7944.950318 & -1173.538980 & 370.858453
+    5 & 20 & -8865.28530 & -5807.87168 & 8.622138 \\
+    10 & 20 & -8865.28530 & -3096.03633 & 17.478406 \\
+    50 & 20 & -8341.99269 & -2258.47350 & 88.392956 \\
+    85 & 20 & -8341.99269 & -1681.11579 & 153.431512 \\
+    100 & 20 & -8341.99269 & -1650.24923 & 193.255694 \\
+    150 & 20 & -8163.91004 & -1199.30190 & 275.721155 \\
+    200 & 20 & -7944.95031 & -1173.53898 & 370.858453
   \end{tabular}
   \caption{Risultati ottenuti con assenza della velocità usando i parametri: $\alpha = 0.25, \beta = 1*10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
   \label{fig:pso-adapt-calculate-1-table}
@@ -282,7 +282,7 @@ Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} 
   \label{fig:pso-adapt-calculate-4-table}
 \end{figure}
 
-Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quasi triplicati, relativamente al fatto che vengono effettuati dei test sulla distanza che incidono negativamente sulle prestazioni. È però da notare che questo aumento dei tempi non coincide con un miglioramento sostanziale della ricerca dell'ottimo da parte dell'algoritmo, ma anzi, sia in media peggiorata. Questo può essere causa di vari fattori, tra cui la possibilità che l'algoritmo si comporti allo stesso modo di quello presentato nella \autoref{chap:pso-adapt-calculate-1}, ma l'introduzione di un nuovo passaggio dell'hill climbing abbia rallentato e peggiorato la scalata.
+Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quasi triplicati, relativamente al fatto che vengono effettuati dei test sulla distanza che incidono negativamente sulle prestazioni. È però da notare che questo aumento dei tempi non coincide con un miglioramento sostanziale della ricerca dell'ottimo da parte dell'algoritmo, ma anzi, sia in media peggiorata. Questo può essere causa di vari fattori, tra cui la possibilità che l'algoritmo si comporti allo stesso modo di quello presentato nella \autoref{chap:pso-adapt-calculate-1}, ma l'introduzione di un nuovo passaggio dell'hill climbing abbia rallentato e peggiorato la scalata. Un esempio dell'albero inferito con 200 particelle è rappresentato nella \autoref{fig:pso-adapt-calculate-4-tree}, mentre i dati relativi all'andamento del tempo di calcolo e della likelihood nel corso delle varie iterazioni sono rappresentati in \autoref{fig:pso-adapt-calculate-4-data}.
 
 \begin{figure}[!h]
   \centering
@@ -303,7 +303,7 @@ Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quas
   \centering
   \includegraphics[width=0.8 \textwidth]{3224_data_best.pdf}
   \caption{Grafici sui tempi ed il miglioramento della likelihood con il passare del tempo}
-  \label{}
+  \label{fig:pso-adapt-calculate-4-data}
 \end{figure}
 
 \begin{figure}[!h]
@@ -347,17 +347,15 @@ Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quas
       [{15} ]]]
     \end{forest}
   }
-  \caption{Albero inferito con numero di particelle $=200$ e numero di iterazioni $=20$}
-  \label{}
+  \caption{Albero inferito con il metodo nella \autoref{chap:pso-adapt-calculate-4}, $likelihood = -1540.622970$}
+  \label{fig:pso-adapt-calculate-4-tree}
 \end{figure}
 
 \subsubsection{Clade casuali tra $p_i$ e $g$ come avvicinamento all'ottimo}
 \label{chap:pso-adapt-calculate-5}
-Fin'ora nel progetto sono stati implementati algoritmi che assomigliavano per la natura del loro comportamento più ad una scalata della collina (hill climbing) che ad un PSO. È stato quindi un passo fondamentale quello di abbandonare totalmente la copia completa e completa delle particelle $p_i$ e $g$, e di operare in maniera più sistematica.
+Fin'ora nel progetto sono stati implementati algoritmi che assomigliavano per la natura del loro comportamento più ad una scalata della collina (hill climbing) che ad un PSO. È stato quindi un passo fondamentale quello di abbandonare totalmente la copia completa delle particelle migliori $p_i$ e $g$, e di operare in maniera più sistematica.
 
-La metrica della distanza rimane invariata, ma viene introdotta una primitiva logica di \textit{velocità}. Ora l'algoritmo ad ogni iterazione calcola la distanza tra la particella corrente $x_i$, $p_i$ e $g$. Utilizzando le distanze appena ottenute, vengono ricavate due liste di nodi, una per $p_i$ ed una per $g$, i cui elementi hanno la caratteristica di avere un numero massimo di mutazioni minore alla loro distanza relativa alla particella corrente. Questo perché si è pensato che più la particella è distante da un ottimo, più nodi bisogna copiare da quest'ultima affinché ci si possa avvicinare. Più avanti verrà analizzato perché questo approccio non ha del tutto funzionato.
-
-L'algoritmo è descritto di seguito:
+La metrica della distanza rimane invariata, ma è stata introdotta una primitiva logica di \textit{velocità}. Ora l'\autoref{algo:pso-adapt-calculate-5-algo} ad ogni iterazione calcola la distanza tra la particella corrente $x_i$, $p_i$ e $g$. Utilizzando le distanze appena ottenute, vengono ricavate due liste di nodi, una per $p_i$ ed una per $g$, i cui elementi hanno la caratteristica di avere un numero massimo di mutazioni minore alla loro distanza relativa alla particella corrente. Questo perché si è pensato che più la particella è distante da un ottimo, più nodi bisogna copiare da quest'ultima affinché ci si possa avvicinare.
 
 \begin{algorithm}[!h]
     distance\_particle $\gets dist(x_i, p_i)$ \\
@@ -372,7 +370,7 @@ L'algoritmo è descritto di seguito:
       \If{distance\_particle $==0$ \texttt{or} len(particle\_clades) $==0$}{ \Comment{Same tree as the best in current particle}
       pick random \textit{max\_clades} from \textit{swarm\_clades}
       }
-      \ElseIf{distance\_swarm $==0$ \texttt{or} len(swarm\_clades) $==0$}{ \Comment{Same tree as the best in current particle}
+      \ElseIf{distance\_swarm $==0$ \texttt{or} len(swarm\_clades) $==0$}{ \Comment{Same tree as the best in swarm}
       pick random \textit{max\_clades} from \textit{particle\_clades}
       }
       tree $\gets x_i$ \\
@@ -385,6 +383,88 @@ L'algoritmo è descritto di seguito:
     \caption{CasualClades}
     \label{algo:pso-adapt-calculate-5-algo}
 \end{algorithm}
+
+Analizzando i risultati ottenuti nella tabella \autoref{fig:pso-adapt-calculate-5-table}, si può intuire come l'algoritmo sia migliorato sostanzialmente rispetto all'approccio descritto nella \autoref{chap:pso-adapt-calculate-4}: i tempi sono diminuiti in rapporto al numero di particelle ed alla likelihood ottenuta, ed ora le particelle si spostano effettivamente in maniera coerente rispetto al PSO.
+
+\begin{figure}[!h]
+  \centering
+  \begin{tabular}{*{5}{c}}
+    Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
+    5 & 20 & -8865.28530 & -4972.52779 & 21.037824 \\
+    10 & 20 & -8865.28530 & -5267.6851 & 43.931567 \\
+    50 & 20 & -8341.99268 & -2735.442262 & 230.71440 \\
+    85 & 20 & -8341.99268 & -2308.64967 & 408.0308 \\
+    100 & 20 & -8341.99268 & -1981.461396 & 487.68030 \\
+    150 & 20 & -8163.91004 & -2131.475215 & 681.9648 \\
+    200 & 20 & -7944.95031 & -1844.15747 & 974.8296 \\
+  \end{tabular}
+  \caption{Risultati ottenuti con considerazione della distanza e random clade da $p_i, g$ usando i parametri: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
+  \label{fig:pso-adapt-calculate-5-table}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \begin{minipage}{.45 \textwidth}
+  \centering
+  \includegraphics[width=0.8 \textwidth]{3225_lh_distance.pdf}
+  \caption{Grafico della likelihood sui vari parametri delle particelle con algoritmo della distanza}
+  \end{minipage}
+  \begin{minipage}{.45 \textwidth}
+    \centering
+    \includegraphics[width=0.8 \textwidth]{322_cpu_no_velocity.pdf}
+    \caption{Grafico del tempo sui vari parametri delle particelle con algoritmo della distanza}
+  \end{minipage}
+  \label{fig:pso-adapt-calculate-1-graph}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.8 \textwidth]{3225_data_best.pdf}
+  \caption{Grafici sui tempi ed il miglioramento della likelihood con il passare del tempo}
+  \label{fig:pso-adapt-calculate-4-data}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \scalebox{0.7}{
+  \begin{forest}
+    germline
+    [{germline} 
+    [{3} 
+    [{22} 
+    [{25} 
+    [{18} 
+    [{4} 
+    [{11} 
+    [{9} 
+    [{13} 
+    [{29} 
+    [{1} 
+    [{20} 
+    [{21} 
+    [{6} ]
+    [{30} 
+    [{17} 
+    [{19} 
+    [{28} 
+    [{12} 
+    [{27} 
+    [{10} 
+    [{7} 
+    [{8} 
+    [{16} 
+    [{15} ]]]]]]]]]]
+    [{23} ]
+    [{24} 
+    [{14} ]
+    [{2} ]]]
+    [{5} 
+    [{26} ]]]]]]]]]]]]]]]
+  \end{forest}
+  }
+  \caption{Albero inferito con il metodo nella \autoref{chap:pso-adapt-calculate-5}}
+  \label{fig:pso-adapt-calculate-5-tree}
+\end{figure}
 
 \section{Modello degli errori single-cell}
 \label{chap:pso-matrix}
@@ -400,13 +480,16 @@ I dati single-cell vengono rappresentati tramite un modello di sostituzione come
 \end{align}
 
 \section{Considerazioni aggiuntive}
+\label{chap:pso-extra}
 Al fine di poter eseguire delle analisi e considerazioni sui risultati ottenuti sono stati fatti diversi accorgimenti sul progetto, di seguito analizzati.
 
 \subsection{Riproducibilità}
+\label{chap:pso-extra-ripro}
 Durante lo sviluppo di un software può capitare di dover rappresentare una situazione, come un bug, una feature, o un risultato particolare. Questa necessità dà luogo al problema della \textit{riproducibilità}, che implica la possibilità allo sviluppatore o a terzi di poter eseguire il software con parametri comuni al fine di ottenere gli stessi risultati e situazioni. Questo obiettivo è stato raggiunto con diversi accorgimenti, come l'elevata flessibilità di configurazione da linea di comando (descritta in dettaglio nel \autoref{chap:pso-extra-guide}) e la possibilità di poter manipolare gli eventi aleatori fissando un \textit{seed}\footnote{Un numero, o vettore, utilizzato per inizializzare un generatore pseudo-casuale di numeri, come quello utilizzato dalla libreria \textit{random} di Python}.
 
 \subsection{Guida allo strumento nello stato attuale}
 \label{chap:pso-extra-guide}
 
-\subsection{Parallelizzazione}
 
+\subsection{Parallelizzazione}
+\label{chap:pso-extra-paral}
