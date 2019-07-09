@@ -126,7 +126,7 @@ La complessità della solo ricerca di un modello per il parametro della velocit�
 
 \subsubsection{Assenza del parametro di velocità}
 \label{chap:pso-adapt-calculate-1}
-Nei momenti iniziali di questo progetto, come è stato descritto precedentemente, trovare una corrispondenza congeniale ed adeguata all'idea di \textit{velocità} del PSO è stato impegnativo. Al fine comunque di poter dare un via al lavoro, una delle prime metriche adottate di velocità è stata la vera e propria assenza di tale metrica. I risultati descritti nella \autoref{fig:pso-adapt-calculate-1-table} possono sembrare promettenti, dato che comunque provano la funzionalità del programma, e che la likelihood aumenta. Quello che i dati non ci dicono è però qualcosa che possiamo intuire dall'intrinseco comportamento dell'assenza della velocità come metrica: siamo di fronte ad un semplice algoritmo di highest hill climbing, descritto nella \autoref{chap:intro-optim-hill}. Quello che succede quindi è che si cerca di migliorare l'algoritmo al primo miglioramento individuato, in questo caso corrisponde ad ogni volta che si trova una likelihood migliore. Questo può sembrare un ottimo risultato, ma è in realtà un problema. L'estrema e ripida scalata rischia di incastrare la ricerca in un ottimo locale, peggiorando considerevolmente le possibilità di trovare un albero filogenetico di \textbf{buona qualità}. È importante sottolineare la \textit{bontà} del risultato, e non il basso valore della \textit{likelihood}, in quanto questo è solo un valore indicativo della verosomiglianza dell'albero con i dati a nostra disposizione, ma non dell'effettiva qualità della loro rappresentazione. È molto meglio quindi cercare di trovare un albero filogenetico con una qualità migliore che quello con la likelihood più elevata.
+Nei momenti iniziali di questo progetto, come è stato descritto precedentemente, trovare una corrispondenza congeniale ed adeguata all'idea di \textit{velocità} del PSO è stato impegnativo. Al fine comunque di poter dare un via al lavoro, una delle prime metriche adottate di velocità è stata la vera e propria assenza di tale metrica. I risultati descritti nella \autoref{tab:pso-adapt-calculate-1-table} possono sembrare promettenti, dato che comunque provano la funzionalità del programma, e che la likelihood aumenta. Quello che i dati non ci dicono è però qualcosa che possiamo intuire dall'intrinseco comportamento dell'assenza della velocità come metrica: siamo di fronte ad un semplice algoritmo di highest hill climbing, descritto nella \autoref{chap:intro-optim-hill}. Quello che succede quindi è che si cerca di migliorare l'algoritmo al primo miglioramento individuato, in questo caso corrisponde ad ogni volta che si trova una likelihood migliore. Questo può sembrare un ottimo risultato, ma è in realtà un problema. L'estrema e ripida scalata rischia di incastrare la ricerca in un ottimo locale, peggiorando considerevolmente le possibilità di trovare un albero filogenetico di \textbf{buona qualità}. È importante sottolineare la \textit{bontà} del risultato, e non il basso valore della \textit{likelihood}, in quanto questo è solo un valore indicativo della verosomiglianza dell'albero con i dati a nostra disposizione, ma non dell'effettiva qualità della loro rappresentazione. È molto meglio quindi cercare di trovare un albero filogenetico con una qualità migliore che quello con la likelihood più elevata.
 
 L'algoritmo risultante per il calcolo della posizione della particella risulta quindi essere il seguente:
 
@@ -150,14 +150,14 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
   \begin{tabular}{*{5}{c}}
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
     5 & 20 & -8865.28530 & -5807.87168 & 8.622138 \\
-    10 & 20 & -8865.28530 & -3096.03633 & 17.478406 \\
-    50 & 20 & -8341.99269 & -2258.47350 & 88.392956 \\
-    85 & 20 & -8341.99269 & -1681.11579 & 153.431512 \\
-    100 & 20 & -8341.99269 & -1650.24923 & 193.255694 \\
-    150 & 20 & -8163.91004 & -1199.30190 & 275.721155 \\
-    200 & 20 & -7944.95031 & -1173.53898 & 370.858453
+    10 & 20 & -8865.28530 & -3096.03633 (\textcolor{green}{+87.59\%}) & 17.478406 (\textcolor{red}{+102.67\%})\\
+    50 & 20 & -8341.99269 & -2258.47350 (\textcolor{green}{+37.09\%}) & 88.392956 (\textcolor{red}{+405.73\%}) \\
+    85 & 20 & -8341.99269 & -1681.11579 (\textcolor{green}{+34.34\%}) & 153.431512 (\textcolor{red}{+73.58\%}) \\
+    100 & 20 & -8341.99269 & -1650.24923 (\textcolor{green}{+1.87\%}) & 193.255694 (\textcolor{red}{+25.96\%}) \\
+    150 & 20 & -8163.91004 & -1199.30190 (\textcolor{green}{+37.60\%}) & 275.721155 (\textcolor{red}{+42.67\%}) \\
+    200 & 20 & -7944.95031 & -1173.53898 (\textcolor{green}{+2.20\%}) & 370.858453 (\textcolor{red}{+34.50\%})
   \end{tabular}
-  \caption{Risultati ottenuti con assenza della velocità usando i parametri: $\alpha = 0.25, \beta = 1*10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
+  \caption{Risultati ottenuti con assenza della velocità}
   \label{tab:pso-adapt-calculate-1-table}
 \end{table}
 \begin{figure}[!h]
@@ -177,7 +177,7 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.8 \textwidth]{3221_data.pdf}
-  \caption{Grafici sui tempi ed il miglioramento della likelihood con l'assenza della velocità}
+  \caption{Grafici sui tempi e l'andamento della likelihood con assenza della velocità}
   \label{fig:pso-adapt-calculate-4-data}
 \end{figure}
 \begin{figure}[!h]
@@ -221,7 +221,7 @@ L'algoritmo risultante per il calcolo della posizione della particella risulta q
     [{2} ]]]]]]]]]]
   \end{forest}
   }
-  \caption{Albero inferito con il metodo nella \autoref{chap:pso-adapt-calculate-1}, $likelihood = -1173.53898$}
+  \caption{Miglior albero inferito con assenza della velocità}
   \label{fig:pso-adapt-calculate-1-tree}
 \end{figure}
 
@@ -329,21 +329,21 @@ richiamabile con \texttt{networkx.algorithms.matching.max\_weight\_matching(G)},
 \subsubsection{Hill climbing con considerazione della distanza}
 \label{chap:pso-adapt-calculate-4}
 Ora che è stata definita una metrica per la distanza, è possibile iniziare a ragionare in maniera più analoga sulla velocità rispetto a quanto non si faceva prima. Si è pensato quindi di utilizzare la nuova metrica introdotta per calcolare la distanza tra la particella attuale $x_i$ e le due particelle migliori $p_i$ e $g$, e scegliere il clade con meno mutazioni in comune tra l'albero meno distante tra i due. Il clade scelto randomicamente viene poi inserito randomicamente come figlio di un nodo dell'albero attuale, e le mutazioni duplicate rimosse. Nella teoria questo avrebbe dovuto portare ad un graduale avvicinamento della particella attuale verso l'ottimo, nella pratica l'implementazione seguita è risultata, ancora una volta, in un algoritmo di hill climbing.
-Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} si ottengono i risultati rappresentati nella \autoref{fig:pso-adapt-calculate-4-table}. 
+Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} si ottengono i risultati rappresentati nella \autoref{tab:pso-adapt-calculate-4-table}. 
 
 \begin{table}[!h]
   \centering
   \begin{tabular}{*{5}{c}}
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
     5 & 20 & -8865.28530 & -7267.75496 & 19.66558 \\
-    10 & 20 & -8865.28530 & -3207.95706 & 43.66173 \\
-    50 & 20 & -8341.99268 & -2773.96311 & 239.89298 \\
-    85 & 20 & -8341.99268 & -1664.407183 & 430.08543 \\
-    100 & 20 & -8341.99268 & -1720.876536 & 602.24159 \\
-    150 & 20 & -8163.91004 & -1594.589690 & 825.43232 \\
-    200 & 20 & -7944.95031 & -1360.172665 & 1147.3371 \\
+    10 & 20 & -8865.28530 & -3207.95706 (\textcolor{green}{+126.55\%}) & 43.66173 (\textcolor{red}{+122.02\%}) \\
+    50 & 20 & -8341.99268 & -2773.96311 (\textcolor{green}{+15.65\%}) & 239.89298 (\textcolor{red}{+449.44\%}) \\
+    85 & 20 & -8341.99268 & -1664.407183 (\textcolor{green}{+66.66\%}) & 430.08543 (\textcolor{red}{+79.28\%}) \\
+    100 & 20 & -8341.99268 & -1720.876536 (\textcolor{red}{-3.28\%}) & 602.24159 (\textcolor{red}{+40.03\%}) \\
+    150 & 20 & -8163.91004 & -1594.589690 (\textcolor{green}{+7.92\%}) & 825.43232 (\textcolor{red}{+37.06\%}) \\
+    200 & 20 & -7944.95031 & -1360.172665 (\textcolor{green}{+17.23\%}) & 1147.3371 (\textcolor{red}{+39.00\%}) \\
   \end{tabular}
-  \caption{Risultati ottenuti con considerazione della distanza usando i parametri: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
+  \caption{Risultati ottenuti con considerazione della distanza}
   \label{tab:pso-adapt-calculate-4-table}
 \end{table}
 
@@ -367,7 +367,7 @@ Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quas
 \begin{figure}[!h]
   \centering
   \includegraphics[width=0.8 \textwidth]{3224_data.pdf}
-  \caption{Grafici sui tempi ed il miglioramento della likelihood con il passare del tempo}
+  \caption{Grafici sui tempi e l'andamento della likelihood con il passare del tempo considerando la distanza}
   \label{fig:pso-adapt-calculate-4-data}
 \end{figure}
 
@@ -412,7 +412,7 @@ Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quas
       [{15} ]]]
     \end{forest}
   }
-  \caption{Albero inferito con il metodo nella \autoref{chap:pso-adapt-calculate-4}, $likelihood = -1540.622970$}
+  \caption{Albero inferito con la considerazione della distanza}
   \label{fig:pso-adapt-calculate-4-tree}
 \end{figure}
 \subsubsection{Clade casuali tra $p_i$ e $g$ come avvicinamento all'ottimo}
@@ -446,19 +446,19 @@ La metrica della distanza rimane invariata, ma è stata introdotta una primitiva
     \caption{CasualClades}
     \label{algo:pso-adapt-calculate-5-algo}
 \end{algorithm}
-Analizzando i risultati ottenuti nella tabella \autoref{fig:pso-adapt-calculate-5-table}, si può intuire come l'algoritmo sia migliorato sostanzialmente rispetto all'approccio descritto nella \autoref{chap:pso-adapt-calculate-4}: i tempi sono diminuiti in rapporto al numero di particelle ed alla likelihood ottenuta, ed ora le particelle si spostano effettivamente in maniera coerente rispetto al PSO. Si può chiaramente però notare come la likelihood finale per ogni iterazione si allontani sempre di più rispetto all'ottimo. Questo non è da considerarsi come un vero e proprio problema, poiché come è stato evidenziato nella \autoref{chap:pso-adapt-calculate-1}, è più importante la \textit{bontà} del risultato, ed è quindi più importante permettere all'algoritmo di esplorare lo spazio di ricerca in maniera più ampia a discapito della velocità con la quale arriva all'ottimo vero e proprio.
+Analizzando i risultati ottenuti nella tabella \autoref{tab:pso-adapt-calculate-5-table}, si può intuire come l'algoritmo sia migliorato sostanzialmente rispetto all'approccio descritto nella \autoref{chap:pso-adapt-calculate-4}: i tempi sono diminuiti in rapporto al numero di particelle ed alla likelihood ottenuta, ed ora le particelle si spostano effettivamente in maniera coerente rispetto al PSO. Si può chiaramente però notare come la likelihood finale per ogni iterazione si allontani sempre di più rispetto all'ottimo. Questo non è da considerarsi come un vero e proprio problema, poiché come è stato evidenziato nella \autoref{chap:pso-adapt-calculate-1}, è più importante la \textit{bontà} del risultato, ed è quindi più importante permettere all'algoritmo di esplorare lo spazio di ricerca in maniera più ampia a discapito della velocità con la quale arriva all'ottimo vero e proprio.
 
 \begin{table}[!h]
   \centering
   \begin{tabular}{*{5}{c}}
     Particelle & Iterazioni & Likelihood Iniziale & Likelihood Migliore & CPU Time (s) \\ \midrule \midrule
     5 & 20 & -8865.28530 & -4972.52779 & 21.037824 \\
-    10 & 20 & -8865.28530 & -5267.6851 & 43.931567 \\
-    50 & 20 & -8341.99268 & -2735.442262 & 230.71440 \\
-    85 & 20 & -8341.99268 & -2308.64967 & 408.0308 \\
-    100 & 20 & -8341.99268 & -1981.461396 & 487.68030 \\
-    150 & 20 & -8163.91004 & -2131.475215 & 681.9648 \\
-    200 & 20 & -7944.95031 & -1844.15747 & 974.8296 \\
+    10 & 20 & -8865.28530 & -5267.6851 (\textcolor{red}{-5.60\%}) & 43.931567 (\textcolor{red}{+108.82\%}) \\
+    50 & 20 & -8341.99268 & -2735.442262 (\textcolor{green}{+92.57\%}) & 230.71440 (\textcolor{red}{+425.17\%}) \\
+    85 & 20 & -8341.99268 & -2308.64967 (\textcolor{green}{+18.49\%}) & 408.0308 (\textcolor{red}{+76.86\%}) \\
+    100 & 20 & -8341.99268 & -1981.461396 (\textcolor{green}{+16.51\%}) & 487.68030 (\textcolor{red}{+19.52\%}) \\
+    150 & 20 & -8163.91004 & -2131.475215 (\textcolor{red}{-7.04\%}) & 681.9648 (\textcolor{red}{+39.84\%}) \\
+    200 & 20 & -7944.95031 & -1844.15747 (\textcolor{green}{+15.58\%}) & 974.8296 (\textcolor{red}{+42.94\%}) \\
   \end{tabular}
   \caption{Risultati con il metodo nella \autoref{chap:pso-adapt-calculate-4} usando i parametri: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, n = 150, m = 30$}
   \label{tab:pso-adapt-calculate-5-table}
