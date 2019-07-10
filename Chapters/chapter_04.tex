@@ -1,5 +1,7 @@
 \chapter{Risultati e conclusioni}
+\label{chap:results}
 \section{Risultati su dati simulati}
+\label{chap:results-sim}
 I test nel capitolo precedente sono stati effettuati su dati simulati generati dal laboratorio di ricerca AlgoLab, sede dello stage, per lo strumento SASC (\autoref{chap:art-sasc}). Di questi dati è conosciuta la filogenia di partenza, rappresentata in \autoref{fig:results-phylogeny}. Per la natura aleatoria e non deterministica della ricerca dell'euristica adottata, non è possibile garantire che una volta raggiunto un ottimo (locale o globale) questo corrisponda alla filogenia di partenza.
 
 \begin{figure}[!h]
@@ -25,16 +27,23 @@ I test nel capitolo precedente sono stati effettuati su dati simulati generati d
     \label{fig:results-phylogeny}
 \end{figure}
 
-Nella \autoref{fig:results-table} messe a paragone le tecniche adottate nel capitolo precedente.
+Nella \autoref{fig:results-table} sono messe a paragone le tecniche adottate nel capitolo precedente, quindi utilizzando come parametri di esecuzione dell'algoritmo: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, particelle = 500, iterazioni = 50$. In aggiunta, viene utilizzata la tecnica della parallelizzazione per ridurre i tempi di esecuzione.
 
 \begin{figure}[!h]
     \centering
     \begin{tabular}{c | c | c }
-        Tecnica & Tempo impiegato & Likelihood \\ \midrule \midrule 
-        TT & T & L
+        Tecnica & Tempo impiegato (s) & Likelihood \\ \midrule \midrule 
+        Assenza velocità, hill & 360.215 & -1333.869862 \\
+        Metrica distanza, hill & & \\
+        Clade casuali & & 
     \end{tabular}
     \caption{Tabella di paragone delle tecniche utilizzate}
     \label{fig:results-table}
 \end{figure}
 
 \section{Prospettive future}
+Sebbene si tratti di uno strumento ancora in fase embrionale, esistono tutti i presupposti per poter portare avanti il progetto al di là del contesto di stage. Ci sono molte vie ancora da esplorare, e tecniche da sperimentare.
+
+Una delle sfide principali allo attuale del progetto è il tempo di calcolo dovuto agli algoritmi di operazioni sull'albero inferito. L'algoritmo potrebbe ad esempio essere migliorato notevolmente introducendo dei calcoli matriciali. Gli alberi inferiti possono infatti essere pensati come delle matrici $n \times m$, le cui righe subiscono delle modifiche in teoria prevedibili. Inoltre, lo strumento potrebbe essere riscritto totalmente in un linguaggio più veloce e performante, come \textit{C++} oppure \textit{Cython}\footnote{Un linguaggio di programmazione che mira ad unire i vantaggi di Python con la performace di C}. 
+
+Potrebbero inoltre essere utilizzati algoritmi di ricerca in concomitanza con il PSO, come uno studio sul design di circuiti analogici integrati \cite{designanalogsapso} che ha utilizzato l'algoritmo del Simulated Annealing e il PSO.
