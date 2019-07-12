@@ -59,6 +59,13 @@ Ad ogni riduzione della temperatura viene cercato un albero topologicamente vici
 
 \begin{equation}
   \label{eq:art-sasc-lh}
+  \sum_i^n \sum_j^m \log ( P( M_{i,j} | D_{i,j} ) )
+\end{equation}
+
+È quindi intuibile definire il problema come un problema di ottimizzazione, in particolare di ricerca del massimo globale, andando quindi a definire la seguente funzione di ottimizzazione:
+
+\begin{equation}
+  \label{eq:art-sasc-lh-max}
   max \sum_i^n \sum_j^m \log ( P( M_{i,j} | D_{i,j} ) )
 \end{equation}
 

@@ -2,6 +2,406 @@
 \label{chap:pso}
 In questa sezione verrà descritto lo strumento di inferenza di alberi tumorali tramite Particle Swarm Optimization (d'ora in poi \textbf{PSO}), le ipotesi effettuate, i risultati ottenuti ed eventuali conclusioni. Viene utilizzata la tecnica euristica Particle Swarm Optimization, descritta precedentemente nel \autoref{chap:intro-optim-pso}.
 
+\section{Ipotesi effettuate}
+\label{chap:pso-hip}
+Lo sviluppo di questo progetto è stato fortemente basato sullo strumento già esistente SASC (precedentemente descritto nella \autoref{chap:art-sasc}). A fronte di ciò, molte premesse e funzioni utilizzate sono state riprese e riadattate alla tecnica adottata.
+
+\subsection{Metodo di ricerca dell'ottimo}
+\label{chap:pso-hip-optim}
+Una delle premesse più importanti è quella della ricerca dell'albero con \textit{likelihood logaritmica} più alta, associando quindi l'algoritmo ad una ricerca del massimo secondo la seguente funzione:
+
+\begin{equation}
+  \label{eq:pso-lh-max}
+  max \sum_i^n \sum_j^m \log ( P( M_{i,j} | D_{i,j} ) )
+\end{equation}
+
+Nella pratica, questa funzione si traduce nell'\autoref{algo:pso-lh-max-algo}.
+
+La funzione \texttt{genotype\_profile(node)}, definita nell'\autoref{algo:pso-lh-max-algo-genotype}, restituisce la lista delle mutazioni acquisite e non di \textit{node}, sotto forma di modello di sostituzione (definito nella \autoref{chap:intro-models-types}), esplorando il nodo corrente e tutti i suoi antenati fino alla radice.
+
+\begin{algorithm}[H]
+    matrix \Comment{Matrice sulla quale fare l'inferenza}
+    tree\_nodes \Comment{Lista dei nodi dell'albero}
+    node\_genotypes $\gets int [len(tree\_nodes)][mutations] = 0$ \Comment{Ogni cella dell'array è impostata a 0}
+    \For{$i$ \KwTo $len(tree\_nodes)$}{
+      node\_genotypes[$i$] $\gets$ genotype\_profile(tree\_nodes[$i$]) \Comment{Ottengo la lista delle mutazioni acquisite dal nodo corrente}
+    }
+    max\_likelihood = 0 \\
+    \For{$i$ \KwTo cells}{
+      best\_lh $\gets -inf$ \\
+      \For{$n$ \KwTo $len(tree\_nodes)$}{
+        lh $\gets 0$ \\
+        \For{$j$ \KwTo mutations}{
+          p $\gets$ prob($matrix[i][j]$, $node\_genotypes[n][j]$) \\
+          lh $\gets$ lh + $log(p)$
+        }
+      }
+      \If{lh $>$ best\_lh}{
+        best\_lh $\gets$ lh
+      }
+      max\_likelihood $\gets$ max\_likelihood + best\_lh
+    }
+    \Return{max\_likelihood}
+    \caption{TreeLogLikelihood}
+    \label{algo:pso-lh-max-algo}
+\end{algorithm}
+
+\begin{algorithm}[H]
+    node \Comment{Nodo di cui si desidera trovare la lista delle mutazioni}
+    genotypes \Comment{Lista dei genotipi, originariamente tutta a 0}
+    \If{node.mutation\_id $== -1$}{
+      \Comment{Il nodo è il nodo radice}
+      \Return{}
+    }
+    \If{node.loss == true}{
+      genotypes[node.mutation\_id] $\gets$ genotypes[node.mutation\_id] + 1
+    }
+    \Else{
+      genotypes[node.mutation\_id] $\gets$ genotypes[node.mutation\_id] - 1
+    }
+    genotype\_profile(parent(node), genotypes)
+    \caption{genotype\_profile}
+    \label{algo:pso-lh-max-algo-genotype}
+\end{algorithm}
+
+\subsection{Operazioni di neighbourhood}
+\label{chap:pso-hip-neigh}
+Per le operazioni di neighbourhood sono state riprese le funzioni di SASC, ossia con l'utilizzo di quattro operazioni per la ricerca del massimo, ognuna selezionata in maniera equalmente casuale: \begin{itemize}
+  \item Add back mutation
+  \item Delete mutation
+  \item Switch nodes
+  \item Prune tree and regraft
+\end{itemize}
+
+\textbf{Add back mutation} (\autoref{fig:pso-hip-neigh-back}): se non si hanno già $k$ mutazioni nell'albero corrente, viene selezionato un nodo casuale, $u$, con almeno due antenati. Si cercano quindi dei nodi candidati nel ramo del nodo corrente. I nodi candidati non devono essere delle back mutation a loro olta, essere il nodo radice, o essere già stato perso $k$ volte. Se esistono dei nodi candidati, si sceglie un nodo casuale, $v$, tra questi. Se il nodo scelto non ha già subito una back mutation nel ramo corrente, allora ne viene aggiunta una al nodo scelto all'inizio dell'algoritmo.
+
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{.45 \textwidth}
+  \centering
+  \begin{forest}
+  germline
+  [{germline}
+    [1,
+      [2, [7]]
+      [3]
+      [4, 
+        [5
+          [6] {
+            \draw[<-,red,thick] (.south)--++(0em,-4ex)--++(-2em,0pt)
+            node[anchor=east,align=center]{\(u\)};
+          }
+        ]
+        [8]
+      ]
+    ] {
+      \draw[<-,red,thick] (.west)--++(-2em, 0)
+      node[anchor=east,align=center]{\(v\)};
+    }
+  ]
+  \end{forest}
+  \caption{Selezione dei nodi}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45 \textwidth}
+  \centering
+  \begin{forest}
+    germline
+    [{germline}
+    [1,
+      [2, [7]]
+      [3]
+      [4, 
+        [5
+          [6
+            [{\textcolor{red}{1}}]
+          ]
+        ]
+        [8]
+      ]
+    ]
+  ]
+  \end{forest}
+  \caption{Aggiunta della back mutation}
+  \end{subfigure}
+  \caption{Add back Mutation}
+  \label{fig:pso-hip-neigh-back}
+\end{figure}
+
+\textbf{Mutation delete} (\autoref{fig:pso-hip-neigh-del-back}): se esistono delle back mutation, si sceglie randomicamente una tra queste, e la si elimina.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{.45 \textwidth}
+  \centering
+  \begin{forest}
+    germline
+    [{germline}
+      [1,
+        [2, [7 [9 [{\textcolor{red}{2}} [10]]
+        {
+          \draw[<-,red,thick] (.east)--++(2em, 0)
+          node[anchor=west,align=center]{to remove};
+        }]]]
+        [3]
+        [4, 
+          [5
+            [6
+              [{\textcolor{red}{1}}]
+            ]
+          ]
+          [8]
+        ]
+      ]
+    ]
+  \end{forest}
+  \caption{Selezione della back mutation}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45 \textwidth}
+  \centering
+  \begin{forest}
+    germline
+    [{germline}
+      [1,
+        [2, [7 [9 [10]]]]
+        [3]
+        [4, 
+          [5
+            [6
+              [{\textcolor{red}{1}}]
+            ]
+          ]
+          [8]
+        ]
+      ]
+    ]
+  \end{forest}
+  \caption{Rimozione della back mutation}
+  \end{subfigure}
+  \caption{Delete back mutation}
+  \label{fig:pso-hip-neigh-del-back}
+\end{figure}
+
+\textbf{Switch Nodes} (\autoref{fig:pso-hip-neigh-switch}): vengono cercati due nodi candidati in maniera casuale che non siano delle back mutation e vengono scambiati di posizione. Eventuali back-mutation non più valide vengono rimosse tramite la funzione \texttt{fix\_for\_losses(tree)}.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{.45 \textwidth}
+  \centering
+  \begin{forest}
+    germline
+    [{germline}
+      [1, 
+        [2, [7 [9 [{\textcolor{red}{2}} [10]]]]] {\draw[<->,red, thick] () .. controls +(right:1.2cm) and +(east:1.2cm) ..
+        node[very near start,below,sloped]{\textit{switch}}
+        (!u);}
+        [3]
+        [4, 
+          [5
+            [6
+              [{\textcolor{red}{1}}]
+            ]
+          ]
+          [8]
+        ]
+      ]
+    ]
+  \end{forest}
+  \caption{Selezione di $u, v$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45 \textwidth}
+  \centering
+  \begin{forest}
+    germline
+    [{germline}
+      [2,
+        [1, [7 [9 [{\textcolor{red}{2}} [10]]10]]] {\draw[<->,red, thick] () .. controls +(right:1.2cm) and +(east:1.2cm) ..
+        node[very near start,below,sloped]{}
+        (!u);}
+        [3]
+        [4, 
+          [5
+            [6
+              [{\textcolor{red}{1}}]
+            ]
+          ]
+          [8]
+        ]
+      ]
+    ]
+  \end{forest}
+  \caption{Switch di $u, v$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45 \textwidth}
+    \centering
+    \begin{forest}
+      germline
+      [{germline}
+        [2,
+          [1, [7 [9 [{\textcolor{red}{2}} [10]]
+          ]]]
+          [3]
+          [4, 
+            [5
+              [6
+                [{\textcolor{red}{1}}]
+                {
+                  \draw[<-,red,thick] (.south)--++(0em,-4ex)--++(-2em,0pt)
+                  node[anchor=east,align=center]{to remove};
+                }
+              ]
+            ]
+            [8]
+          ]
+        ]
+      ]
+    \end{forest}
+    \caption{Identificazione back mutation non valide}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45 \textwidth}
+    \centering
+    \begin{forest}
+      germline
+      [{germline}
+        [2,
+          [1, [7 [9 [{\textcolor{red}{2}} [10]]
+          ]]]
+          [3]
+          [4, 
+            [5
+              [6]
+            ]
+            [8]
+          ]
+        ]
+      ]
+    \end{forest}
+    \caption{Rimozione delle back mutation non valide}
+  \end{subfigure}
+  \caption{Switch nodes}
+  \label{fig:pso-hip-neigh-switch}
+\end{figure}
+
+\textbf{Prune tree and regraft} (\autoref{fig:pso-hip-neigh-pruneregraft}): vengono selezionati in maniera casuale due nodi, $u$ e $v$, che non siano delle back mutation. Il nodo $u$ viene quindi staccato dal suo nodo padre, ed inserito come nodo figlio di $v$. Eventuali back-mutation non più valide vengono rimosse tramite la funzione \texttt{fix\_for\_losses(tree)}.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{.45 \textwidth}
+  \centering
+  \begin{forest}
+    germline
+    [{germline}
+      [1, 
+        [2, [7 [9, tikz={\node [draw,red,thick,inner sep=0.1cm,fit to=tree]{};}
+        [{\textcolor{red}{2}} [10]]]
+        {
+          \draw[<-,red,thick] (.east)--++(2em, 0)
+          node[anchor=west,align=center]{$u$};
+        }
+        ]]
+        [3]
+        [4, 
+          [5
+            [6
+              [{\textcolor{red}{1}}]
+            ]
+          ]
+          [8]
+          {
+            \draw[<-,red,thick] (.west)--++(-2em, 0)
+            node[anchor=east,align=center]{\(v\)};
+          }
+        ]
+      ]
+    ]
+  \end{forest}
+  \caption{Selezione di $u, v$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45 \textwidth}
+  \centering
+  \begin{forest}
+    germline
+    [{germline}
+      [1, 
+        [2, [7 ]]
+        [3]
+        [4, 
+          [5
+            [6
+              [{\textcolor{red}{1}}]
+            ]
+          ]
+          [8]
+          {
+            \draw[<-,red,thick] (.west)--++(-2em, 0)
+            node[anchor=east,align=center]{\(v\)};
+          }
+        ]
+      ]
+    ]
+  \end{forest}
+  \caption{Prune di $u$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45 \textwidth}
+    \centering
+    \begin{forest}
+      germline
+      [{germline}
+        [1,
+          [2, [7]]
+          [3]
+          [4, 
+            [5
+              [6
+                [{\textcolor{red}{1}}]
+              ]
+            ]
+            [8 [9, tikz={\node [draw,red,thick,inner sep=0.1cm,fit to=tree]{};}
+            [{\textcolor{red}{2}} [10]]]]
+          ]
+        ]
+      ]
+    \end{forest}
+    \caption{Regraft di $u$}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45 \textwidth}
+    \centering
+    \begin{forest}
+      germline
+      [{germline}
+        [1,
+          [2, [7]]
+          [3]
+          [4, 
+            [5
+              [6
+                [{\textcolor{red}{1}}]
+              ]
+            ]
+            [8 [9, tikz={\node [draw,red,thick,inner sep=0.1cm,fit to=tree]{};}
+            [10]]]
+          ]
+        ]
+      ]
+    \end{forest}
+    \caption{Rimozione delle back mutation non valide}
+  \end{subfigure}
+  \caption{Prune tree and regraft}
+  \label{fig:pso-hip-neigh-pruneregraft}
+\end{figure}
+
+\subsection{Modello degli errori single-cell}
+\label{chap:pso-hip-matrix}
+I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nella \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà è un $1$:
+\begin{align}
+    \label{eq:pso-intro-model-matrix}
+    \begin{split}
+      P(M_{i,j} = 0 | D_{i,j} = 0) = 1 - \alpha, \qquad
+      &P(M_{i,j} = 0 | D_{i,j} = 1) = \beta, \\
+      P(M_{i,j} = 1 | D_{i,j} = 0) = \alpha, \qquad
+      &P(M_{i,j} = 1 | D_{i,j} = 1) = 1 - \beta
+    \end{split}
+\end{align}
+
 \section{Strumenti Utilizzati}
 Lo strumento è stato sviluppato in Python. Inizialmente si era cercato di utilizzare Cython\footnote{Un linguaggio di programmazione simile a Python, ma con il vantaggio di avere velocità simili a quelle ottenute da C}, poi abbandonato poiché lo studio di questo linguaggio di programmazione avrebbe ridotto il tempo utile alla vera e propria implementazione dello strumento. Si pensa però in futuro di riscrivere il codice utilizzando \textit{C++}.
 
@@ -21,37 +421,26 @@ I moduli e le librerie Python che sono state utilizzate sono elencate di seguito
 
 \small * Moduli esterni
 
+Lo sviluppo e la fase di testing è avvenuto su una macchina dotata di processore \textit{i7-6500U} (2.50 GHz, 4MB Cache), 8GB RAM DDR3L (1600 MHz).
+
 \subsection{Dati utilizzati}
 Per poter testare l'algoritmo ed il codice sviluppato su di esso è essenziale avere dei dati sia veri che simulati. A questo proposito sono stati utilizzati i dati simulati dal laboratorio di appartenenza del progetto, AlgoLab. Nelle seguenti sezioni verranno analizzati i dati relativi al file simulato presente nella directory del progetto \texttt{data/simulatex/exp1/sim1\_scs.txt}.
 % TODO: spiegare perché è utile avere sia dati veri che simulati
 
 \section{Adattamento del problema a Particle Swarm Optimization}
 \label{chap:pso-adapt}
-Una delle principali sfide in questo progetto è stata di riuscire a trovare un'interpretazione valida ed efficacie adatta alla tecnica euristica scelta, appunto il Particle Swarm Optimization, il cui funzionamento ed algoritmo sono descritti dettagliatamente nella \autoref{chap:intro-optim-pso}. Il modello più immediato da adattare al problema è quello di associare una particella dello swarm ad un albero sul quale vengono effettuate delle operazioni. Queste operazioni saranno ciò che determina il ``movimento'' della particella nello spazio. Lo swarm non è quindi altro che l'insieme degli alberi. Possiamo dividere l'implementazione in quattro fasi: \begin{enumerate}
+Una delle principali sfide in questo progetto è stata di riuscire a trovare un'interpretazione valida ed efficacie adatta alla tecnica euristica scelta, appunto il Particle Swarm Optimization, il cui funzionamento ed algoritmo sono descritti dettagliatamente nella \autoref{chap:intro-optim-pso}. Il modello più immediato da adattare al problema è quello di associare una particella dello swarm ad un albero sul quale vengono effettuate delle operazioni. Queste operazioni saranno ciò che determina il ``movimento'' della particella nello spazio. Lo swarm non è quindi altro che l'insieme degli alberi. L'implementazione può essere suddivisa in quattro fasi: \begin{enumerate}
   \item Inizializzazione
   \item Calcolo del movimento della particella
   \item Aggiornamento della particella
   \item Aggiornamento della particella migliore dello swarm e della soluzione migliore della particella
 \end{enumerate}
 
-\section{Modello degli errori single-cell}
-\label{chap:pso-matrix}
-I dati single-cell vengono rappresentati tramite un modello di sostituzione come quello illustrato nella \autoref{chap:intro-models} tramite una matrice $M = n \times m$, con $n$ cellule e $m$ mutazioni. Viene poi utilizzata una matrice $D = n \times m$ è ricavata dall'osservazione dell'albero inferito, ed è una versione imperfetta del vero genotipo della matrice $M$. Per mitigare i problemi causati dalle tecniche di WGA (\autoref{chap:intro-scs}) viene utilizzato il parametro $\alpha$ per indicare la probabilità di incontrare un falso positivo, quindi osservare un $1$ quando in realtà questo è uno $0$, e falsi negativi, cioè di avere la probabilità $\beta$ di osservare uno $0$ quando in realtà è un $1$:
-\begin{align}
-    \label{eq:pso-intro-model-matrix}
-    \begin{split}
-      P(M_{i,j} = 0 | D_{i,j} = 0) = 1 - \alpha, \qquad
-      &P(M_{i,j} = 0 | D_{i,j} = 1) = \beta, \\
-      P(M_{i,j} = 1 | D_{i,j} = 0) = \alpha, \qquad
-      &P(M_{i,j} = 1 | D_{i,j} = 1) = 1 - \beta
-    \end{split}
-\end{align}
-
 \subsection{Inizializzazione}
 \label{chap:pso-adapt-init}
 Possiamo considerare una particella dello swarm come un albero, la cui posizione è determinata dalla configurazione dei suoi nodi. L'inizializzazione viene effettuata randomizzando la topologia di un albero binario $T$ con $m$ nodi, uno per ogni mutazione, con una funzione randomica\footnote{In realtà la funzione è del tipo pseudo-randomica, utilizzando il generatore \textit{Mersenne Twister} \cite{Matsumoto:MersenneTwister}, ma non avendo problemi dal punto di vista della sicurezza o della riproducibilità, è stato pervenuto che per i nostri scopi è più che valido e sufficiente}. In questo modo, viene ottenuta una topologia simile a quella rappresentata nella \autoref{fig:pso-adapt-init-topology}. Il metodo di generazione dell'albero binario è ripreso da quello implementato su SASC, ed è descritto nell'\autoref{algo:pso-adapt-init}.
 
-\begin{algorithm}[!h]
+\begin{algorithm}[H]
     $m = $ numero di mutazioni
     $r = $ radice dell'albero \\
     $tree = [1, \dots, m]$ \Comment{Vettore con tutti i nodi dell'albero}
@@ -66,7 +455,7 @@ Possiamo considerare una particella dello swarm come un albero, la cui posizione
         newNode $\gets$ new Node(name = mutation\_name(m), parent = nodes[append\_node], mutationid = tree[i]) \\
         nodes.append(newNode)
       }
-      append\_node $\gets$ append\_node $+ 1$
+      append\_node $\gets$ append\_node $+ 1$ \\
       $i \gets i + 1$
     }
     \Return{r}
@@ -130,7 +519,7 @@ Nei momenti iniziali di questo progetto, come è stato descritto precedentemente
 
 L'algoritmo risultante per il calcolo della posizione della particella risulta quindi essere il seguente:
 
-\begin{algorithm}[!h]
+\begin{algorithm}[H]
     $r \gets random()$ \\
     \If{$r < .33$}{
       $tree \gets p_i$
@@ -287,6 +676,26 @@ Un'analisi più approfondita della formula fa però emergere  un problema. La so
 
   \end{tikzpicture}
   \caption{Esempio di grafo bipartito}
+  \begin{tikzpicture}[every node/.style={circle, draw}]
+    \node at (0, 1) (a1) {};
+    \node at (0, 2) (a2) {};
+    \node at (0, 3) (a3) {};
+    \node at (0, 4) (a4) {};
+    \node at (0, 5) (a5) {};
+
+    \node at (2, 1) (b1) {};
+    \node at (2, 2) (b2) {};
+    \node at (2, 3) (b3) {};
+    \node at (2, 4) (b4) {};
+    \node at (2, 5) (b5) {};
+
+    \draw[red, thick](a1) -- (b3);
+    \draw[red, thick](a2) -- (b5);
+    \draw[red, thick](a3) -- (b2);
+    \draw[red, thick](a4) -- (b1);
+    \draw[red, thick](a5) -- (b4);
+  \end{tikzpicture}
+  \caption{Esempio di grafo bipartito con max weight matching}
   \label{fig:pso-adapt-calculate-2-bip}
   \end{minipage}
   \begin{minipage}{.45 \textwidth}
@@ -298,7 +707,8 @@ Un'analisi più approfondita della formula fa però emergere  un problema. La so
       [{b} 
       [{c} 
       [{d} ]]]]]
-    \end{forest}\caption{Somma delle mutazioni acquisite per $max(d) = 4$}
+    \end{forest}
+    \caption{Somma delle mutazioni acquisite per $max(d) = 4$}
     \begin{forest}
       germline
       [{germline}
@@ -331,6 +741,35 @@ richiamabile con \texttt{networkx.algorithms.matching.max\_weight\_matching(G)},
 Ora che è stata definita una metrica per la distanza, è possibile iniziare a ragionare in maniera più analoga sulla velocità rispetto a quanto non si faceva prima. Si è pensato quindi di utilizzare la nuova metrica introdotta per calcolare la distanza tra la particella attuale $x_i$ e le due particelle migliori $p_i$ e $g$, e scegliere il clade con meno mutazioni in comune tra l'albero meno distante tra i due. Il clade scelto randomicamente viene poi inserito randomicamente come figlio di un nodo dell'albero attuale, e le mutazioni duplicate rimosse. Nella teoria questo avrebbe dovuto portare ad un graduale avvicinamento della particella attuale verso l'ottimo, nella pratica l'implementazione seguita è risultata, ancora una volta, in un algoritmo di hill climbing.
 Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} si ottengono i risultati rappresentati nella \autoref{tab:pso-adapt-calculate-4-table}. 
 
+\begin{algorithm}[H]
+    distance\_particle $\gets dist(x_i, p_i)$ \\
+    distance\_swarm $\gets dist(x_i, g)$ \\
+    max\_weight\_particle\_clade $\gets$ max\_weight\_clade($dist(x_i, p_i)$) \\
+    max\_weight\_swarm\_clade $\gets$ max\_weight\_clade($dist(x_i, p_i)$) \\
+    r $\gets$ random() \\
+    \If{$r < .25$}{
+      tree $\gets p_i$ \\
+    }
+    \ElseIf{$r < .5$}{
+      tree $\gets g$ \\
+    }
+    \ElseIf{$r < .75$}{
+      tree $\gets x_i$ \\
+    }
+    \Else{
+      \If{distance\_swarm $>$ distance\_particle}{
+        clade\_to\_attach $\gets$ max\_weight\_swarm\_clade
+      }
+      \Else{
+        clade\_to\_attach $\gets$ max\_weight\_particle\_clade
+      } 
+      tree $\gets$ RandomTreeInit() \\
+      attach\_clade\_and\_fix\_for\_losses(tree, clade\_to\_attach)
+    }
+    execute\_random\_operation(tree)
+    \caption{HillClimbDist}
+    \label{algo:pso-adapt-calculate-4-algo}
+\end{algorithm}
 \begin{table}[!h]
   \centering
   \begin{tabular}{*{5}{c}}
@@ -347,7 +786,8 @@ Eseguendo gli stessi test effettuati nella \autoref{chap:pso-adapt-calculate-1} 
   \label{tab:pso-adapt-calculate-4-table}
 \end{table}
 
-Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quasi triplicati, relativamente al fatto che vengono effettuati dei test sulla distanza che incidono negativamente sulle prestazioni. È però da notare che questo aumento dei tempi non coincide con un miglioramento sostanziale della ricerca dell'ottimo da parte dell'algoritmo, ma anzi, sia in media peggiorata. Questo può essere causa di vari fattori, tra cui la possibilità che l'algoritmo si comporti allo stesso modo di quello presentato nella \autoref{chap:pso-adapt-calculate-1}, ma l'introduzione di un nuovo passaggio dell'hill climbing abbia rallentato e peggiorato la scalata. Un esempio dell'albero inferito con 200 particelle è rappresentato nella \autoref{fig:pso-adapt-calculate-4-tree}, mentre i dati relativi all'andamento del tempo di calcolo e della likelihood nel corso delle varie iterazioni sono rappresentati in \autoref{fig:pso-adapt-calculate-4-data}.
+Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quasi triplicati, relativamente al fatto che vengono effettuati dei test sulla distanza che incidono negativamente sulle prestazioni. È però da notare che questo aumento dei tempi non coincide con un miglioramento sostanziale della ricerca dell'ottimo da parte dell'algoritmo, ma anzi, sia in media peggiorata. Questo può essere causa di vari fattori, tra cui la possibilità che l'algoritmo si comporti allo stesso modo di quello presentato nella \autoref{chap:pso-adapt-calculate-1}, ma l'introduzione di un nuovo passaggio dell'hill climbing abbia rallentato e peggiorato la scalata. 
+Un esempio dell'albero inferito con 200 particelle è rappresentato nella \autoref{fig:pso-adapt-calculate-4-tree}, mentre i dati relativi all'andamento del tempo di calcolo e della likelihood nel corso delle varie iterazioni sono rappresentati in \autoref{fig:pso-adapt-calculate-4-data}.
 
 \begin{figure}[!h]
   \centering
@@ -420,7 +860,7 @@ Si può evidenziare dal test effettuato come i tempi siano quasi duplicati, quas
 Fin'ora nel progetto sono stati implementati algoritmi che assomigliavano per la natura del loro comportamento più ad una scalata della collina (hill climbing) che ad un PSO. È stato quindi un passo fondamentale quello di abbandonare totalmente la copia completa delle particelle migliori $p_i$ e $g$, e di operare in maniera più sistematica.
 La metrica della distanza rimane invariata, ma è stata introdotta una primitiva logica di \textit{velocità}. Ora l'\autoref{algo:pso-adapt-calculate-5-algo} ad ogni iterazione calcola la distanza tra la particella corrente $x_i$, $p_i$ e $g$. Utilizzando le distanze appena ottenute, vengono ricavate due liste di nodi, una per $p_i$ ed una per $g$, i cui elementi hanno la caratteristica di avere un numero massimo di mutazioni minore alla loro distanza relativa alla particella corrente. Questo perché si è pensato che più la particella è distante da un ottimo, più nodi bisogna copiare da quest'ultima affinché ci si possa avvicinare.
 
-\begin{algorithm}[!h]
+\begin{algorithm}[H]
     distance\_particle $\gets dist(x_i, p_i)$ \\
     distance\_swarm $\gets dist(x_i, g)$ \\
     particle\_clades $\gets$ get\_clades\_max\_nodes(distance\_particle)\\

@@ -1,8 +1,9 @@
 \chapter{Risultati e conclusioni}
 \label{chap:results}
+
 \section{Risultati su dati simulati}
 \label{chap:results-sim}
-I test nel capitolo precedente sono stati effettuati su dati simulati generati dal laboratorio di ricerca AlgoLab, sede dello stage, per lo strumento SASC (\autoref{chap:art-sasc}). Di questi dati è conosciuta la filogenia di partenza, rappresentata in \autoref{fig:results-phylogeny}. Per la natura aleatoria e non deterministica della ricerca dell'euristica adottata, non è possibile garantire che una volta raggiunto un ottimo (locale o globale) questo corrisponda alla filogenia di partenza.
+I test nel capitolo precedente sono stati effettuati su dati simulati generati dal laboratorio di ricerca AlgoLab, sede dello stage, per lo strumento SASC (\autoref{chap:art-sasc}). Di questi dati è conosciuta la filogenia di partenza, rappresentata in \autoref{fig:results-phylogeny}. Per la natura aleatoria e non deterministica della ricerca dell'euristica adottata, non è possibile garantire che una volta raggiunto un ottimo (locale o globale) questo corrisponda alla filogenia di partenza. In aggiunta, nei test che seguono in questo capitolo viene utilizzata la tecnica della parallelizzazione per ridurre i tempi di esecuzione.
 
 \begin{figure}[!h]
     \centering
@@ -27,23 +28,291 @@ I test nel capitolo precedente sono stati effettuati su dati simulati generati d
     \label{fig:results-phylogeny}
 \end{figure}
 
-Nella \autoref{fig:results-table} sono messe a paragone le tecniche adottate nel capitolo precedente, quindi utilizzando come parametri di esecuzione dell'algoritmo: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1, particelle = 500, iterazioni = 50$. In aggiunta, viene utilizzata la tecnica della parallelizzazione per ridurre i tempi di esecuzione.
+\subsection{Modello di Dollo-\textit{k} con \textit{k} = 0}
+Avendo a disposizione una filogenia della quale si conosce la struttura finale, si è ritenuto utile eseguire lo strumento utilizzando il parametro $k$ del modello di Dollo-\textit{k} con valore 0, poiché l'albero di partenza non presenta back mutation. La \autoref{tab:results-table-dollo-0} dei risultati 
 
-\begin{figure}[!h]
+\begin{table}[!h]
     \centering
     \begin{tabular}{c | c | c | c }
         Tecnica & Tempo impiegato (s) & Likelihood Iniziale & Likelihood Finale \\ \midrule \midrule 
-        Assenza velocità, hill & 360.215 & a & -1333.869862 \\
-        Metrica distanza, hill & & & \\
-        Clade casuali & 3744.960 & -7944.950318 & -1123.840910
+        Assenza velocità, hill & 2216 & -7944.950318 & -677.457346 \\
+        Metrica distanza, hill & 3742 (\textcolor{red}{+68.86\%}) & -7944.950318 & -689.933905 (\textcolor{red}{-1.80\%}) \\
+        Clade casuali & 4159 (\textcolor{red}{+11.14\%}) & -7944.950318 & -1121.068341 (\textcolor{red}{-39.57\%})
     \end{tabular}
-    \caption{Tabella di paragone delle tecniche utilizzate}
-    \label{fig:results-table}
+    \caption{Tabella di paragone delle tecniche utilizzate, $k = 0$}
+    \label{tab:results-table-dollo-0}
+\end{table}
+
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.5}{
+    \begin{forest}
+        germline
+        [{germline} 
+        [{22} 
+        [{13} 
+        [{21} 
+        [{20} 
+        [{1} 
+        [{29} 
+        [{19} 
+        [{3} 
+        [{30} 
+        [{4} 
+        [{25} 
+        [{11} 
+        [{18} 
+        [{16} 
+        [{8} 
+        [{7} ]]]
+        [{28} 
+        [{27} 
+        [{17} ]]]
+        [{10} 
+        [{15} ]]]]]]]]]
+        [{23} 
+        [{12} 
+        [{6} 
+        [{26} 
+        [{5} 
+        [{9} ]]]]]]
+        [{2} 
+        [{24} 
+        [{14} ]]]]]]]]]]
+    \end{forest}
+    }
+    \caption{Albero inferito senza parametro della velocità, stile hill climbing, $k = 0$}
+    \label{fig:results-tree-dollo-0-1}
 \end{figure}
 
-\section{Prospettive future}
-Sebbene si tratti di uno strumento ancora in fase embrionale, esistono tutti i presupposti per poter portare avanti il progetto al di là del contesto di stage. Ci sono molte vie ancora da esplorare, e tecniche da sperimentare.
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.5}{
+    \begin{forest}
+        germline
+        [{germline} 
+        [{13} 
+        [{21} 
+        [{22} 
+        [{20} 
+        [{1} 
+        [{29} 
+        [{3} 
+        [{19} 
+        [{30} 
+        [{4} 
+        [{25} 
+        [{11} 
+        [{18} 
+        [{16} 
+        [{8} 
+        [{7} ]]]
+        [{10} 
+        [{15} ]]
+        [{28} 
+        [{27} 
+        [{17} ]]]]]]]]]]
+        [{14} 
+        [{2} 
+        [{24} ]]
+        [{23} 
+        [{26} 
+        [{12} 
+        [{6} 
+        [{5} 
+        [{9} ]]]]]]]]]]]]]]
+    \end{forest}
+    }
+    \caption{Albero inferito con la metrica della distanza, stile hill climbing, $k = 0$}
+    \label{fig:results-tree-dollo-0-2}
+\end{figure}
 
-Una delle sfide principali allo attuale del progetto è il tempo di calcolo dovuto agli algoritmi di operazioni sull'albero inferito. L'algoritmo potrebbe ad esempio essere migliorato notevolmente introducendo dei calcoli matriciali. Gli alberi inferiti possono infatti essere pensati come delle matrici $n \times m$, le cui righe subiscono delle modifiche in teoria prevedibili. Inoltre, lo strumento potrebbe essere riscritto totalmente in un linguaggio più veloce e performante, come \textit{C++} oppure \textit{Cython}\footnote{Un linguaggio di programmazione che mira ad unire i vantaggi di Python con la performace di C}. 
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.5}{
+    \begin{forest}
+        germline
+        [{germline} 
+        [{22} 
+        [{21} 
+        [{3} 
+        [{29} 
+        [{25} 
+        [{11} 
+        [{4} 
+        [{19} 
+        [{30} 
+        [{1} 
+        [{13} 
+        [{20} 
+        [{6} 
+        [{23} 
+        [{12} 
+        [{5} 
+        [{26} 
+        [{9} ]]]]]]
+        [{18} 
+        [{7} 
+        [{16} 
+        [{8} ]]]
+        [{27} 
+        [{28} 
+        [{17} ]]
+        [{14} 
+        [{24} 
+        [{2} ]]]]
+        [{10} 
+        [{15} ]]]]]]]]]]]]]]]]
+    \end{forest}
+    }
+    \caption{Albero inferito con la metrica della distanza e clade casuali, $k = 0$}
+    \label{fig:results-tree-dollo-0-3}
+\end{figure}
 
-Potrebbero inoltre essere utilizzati algoritmi di ricerca in concomitanza con il PSO, come uno studio sul design di circuiti analogici integrati \cite{designanalogsapso} che ha utilizzato l'algoritmo del Simulated Annealing e il PSO.
+\subsection{Modello di Dollo-\textit{k} con \textit{k} = 3}
+
+Nella \autoref{tab:results-table-dollo-3} sono messe a paragone le tecniche adottate nel capitolo precedente, quindi utilizzando come parametri di esecuzione dell'algoritmo: $\alpha = 0.25, \beta = 1\cdot 10^{-5}, k = 3, seed = 1,\ particelle = 500,\ iterazioni = 50$. In particolare viene testata la performance sotto le condizioni del modello di Dollo-\textit{k} con $k > 0$.
+
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{c | c | c | c }
+        Tecnica & Tempo impiegato (s) & Likelihood Iniziale & Likelihood Finale \\ \midrule \midrule 
+        Assenza velocità, hill & 2408 & -7944.950318 & -694.092758 \\
+        Metrica distanza, hill & 3890 & -7944.950318 & -790.961096 \\
+        Clade casuali & 3744 & -7944.950318 & -1123.840910
+    \end{tabular}
+    \caption{Tabella di paragone delle tecniche utilizzate, $k = 3$}
+    \label{tab:results-table-dollo-3}
+\end{table}
+
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.5}{
+    \begin{forest}
+        germline
+        [{germline} 
+        [{20} 
+        [{21} 
+        [{22} 
+        [{13} 
+        [{1} 
+        [{29} 
+        [{3} 
+        [{30} 
+        [{19} 
+        [{4} 
+        [{25} 
+        [{11} 
+        [{16} 
+        [{8} 
+        [{18} 
+        [{8},color=red 
+        [{16},color=red 
+        [{10} 
+        [{28} 
+        [{27} 
+        [{17} ]]]
+        [{15} ]]]]
+        [{7} ]]]]]]]]]
+        [{5} 
+        [{23} 
+        [{12} 
+        [{6} 
+        [{3},color=red 
+        [{26} 
+        [{9} ]]]]]]]]
+        [{24} 
+        [{14} 
+        [{2} ]]]]]]]]]]
+    \end{forest}
+    }
+    \caption{Albero inferito senza parametro della velocità, stile hill climbing, $k = 3$}
+    \label{fig:results-tree-1}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.5}{
+    \begin{forest}
+        germline
+        [{germline} 
+        [{22} 
+        [{20} 
+        [{21} 
+        [{13} 
+        [{1} 
+        [{29} 
+        [{3} 
+        [{14} 
+        [{19} 
+        [{4} 
+        [{14},color=red 
+        [{30} 
+        [{25} 
+        [{11} 
+        [{18} 
+        [{24} 
+        [{10} 
+        [{24},color=red 
+        [{15} ]]]]
+        [{16} 
+        [{8} 
+        [{7} ]]]
+        [{28} 
+        [{27} 
+        [{17} ]]]]]]]]]]
+        [{3},color=red 
+        [{2} ]]]]
+        [{12} 
+        [{5} 
+        [{6} 
+        [{23} 
+        [{9} 
+        [{26} ]]]]]]]]]]]]]
+    \end{forest}
+    }
+    \caption{Albero inferito con la metrica della distanza, stile hill climbing, $k = 3$}
+    \label{fig:results-tree-2}
+\end{figure}
+
+\begin{figure}[!h]
+    \centering
+    \scalebox{0.5}{
+    \begin{forest}
+        germline
+        [{germline} 
+        [{20} 
+        [{21} 
+        [{29} 
+        [{18} 
+        [{3} 
+        [{30} 
+        [{4} 
+        [{11} 
+        [{19} 
+        [{22} 
+        [{1} 
+        [{13} 
+        [{12} 
+        [{26} 
+        [{9} 
+        [{5} 
+        [{23} 
+        [{6} ]]]]]]
+        [{24} 
+        [{2} 
+        [{14} ]]]
+        [{25} 
+        [{10} 
+        [{15} ]]
+        [{16} 
+        [{8} 
+        [{7} ]]
+        [{28} 
+        [{17} 
+        [{27} ]]]]]]]]]]]]]]]]]]
+    \end{forest}
+    }
+    \caption{Albero inferito con la metrica della distanza e clade casuali, $k = 3$}
+    \label{fig:results-tree-3}
+\end{figure}
