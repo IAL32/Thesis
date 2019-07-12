@@ -1,5 +1,6 @@
 \geometry{top=21mm,bottom=21mm}
 \setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
 \batchmode
 \bibliography{bibliography}
 \pgfplotsset{compat=newest}
@@ -73,3 +74,11 @@
 % Colors
 
 \definecolor{ao(english)}{rgb}{0.0, 0.5, 0.0}
+
+\lstset{
+  basicstyle=\ttfamily,
+  columns=fullflexible,
+  frame=single,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+}
