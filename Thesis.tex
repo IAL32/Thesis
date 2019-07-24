@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{book}
+\documentclass[a4paper,12pt,openright]{book}
 % Per gli accenti e caratteri speciali
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -10,6 +10,7 @@
 \usepackage{setspace}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{emptypage}
 % Inserimento di immagini
 \usepackage{graphicx}
 \graphicspath{ {./Images/} }
@@ -20,7 +21,7 @@
 \usepackage{subcaption}
 % \usepackage[lofdepth,lotdepth]{subfig}
 % Link esterni e interni
-\usepackage[colorlinks=true,urlcolor=blue,linkcolor=black,citecolor=blue]{hyperref}
+\usepackage[colorlinks=true,urlcolor=black,linkcolor=black,citecolor=black]{hyperref}
 \usepackage{float}
 \usepackage{booktabs}
 % Referenze
@@ -91,19 +92,25 @@
     \end{flushright}
     \vspace{40mm}
     \begin{center}
-        {\large{\bf Anno Accademico 2016-2019}}
+        {\large{\bf Anno Accademico 2018-2019}}
     \end{center}
     \restoregeometry
 \end{titlepage}
 % \maketitle
 
+% \makeatletter\@openrighttrue\makeatother
 \newpage
 \tableofcontents
-\pagenumbering{arabic}
+
+% \makeatletter\@openrightfalse\makeatother
+
 
 \input{Thanks}
 \input{Prefazione}
 \input{Abstract}
+
+% \makeatletter\@openrighttrue\makeatother
+
 \foreach \i in {01,02,03,04,05} {%
     \edef\FileName{Chapters/chapter_\i}%     The % here are necessary to eliminate any
     \IfFileExists{\FileName}{%  spurious spaces that may get inserted
